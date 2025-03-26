@@ -1,11 +1,19 @@
-import { Post, Vote, Comment } from '@prisma/client';
+// Extended Event types
+import type { Event, Ticket } from '@prisma/client';
 
-export type PostExtended = Post & {
-  _count?: {
-    comments: number;
+// Event with ticket count
+export type EventWithCount = Event & {
+  _count: {
+    tickets: number;
   };
-  votes?: Vote[];
-  comments?: Comment[];
+};
+
+// Event with tickets and count
+export type EventWithTickets = Event & {
+  tickets: Ticket[];
+  _count: {
+    tickets: number;
+  };
 };
 
 // From indexer api

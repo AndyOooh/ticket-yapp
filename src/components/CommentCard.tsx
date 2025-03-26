@@ -2,7 +2,6 @@ import { Avatar } from '@radix-ui/themes';
 import { Flex, Text } from '@radix-ui/themes';
 import { formatDistanceToNow } from 'date-fns';
 import { truncateAddress } from '@/lib/utils';
-import { Comment } from '@prisma/client';
 import { PersonIcon } from '@radix-ui/react-icons';
 
 export const CommentCard = (comment: Comment) => {

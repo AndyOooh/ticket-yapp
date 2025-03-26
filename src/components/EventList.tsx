@@ -3,15 +3,15 @@
 import { useState, useEffect } from 'react';
 import { Box, Flex, Text } from '@radix-ui/themes';
 import { useInView } from 'react-intersection-observer';
-import PostCard from '@/components/PostCard';
-import { PostExtended } from '@/types';
+import { EventCard } from '@/components/EventCard';
+import { EventWithCount } from '@/types';
 
-type PostListProps = {
-  initialPosts: PostExtended[];
+type EventListProps = {
+  initialEvents: EventWithCount[];
 };
 
-export default function PostList({ initialPosts }: PostListProps) {
-  const [posts, setPosts] = useState<PostExtended[]>(initialPosts);
+export const EventList = ({ initialEvents }: EventListProps) => {
+  const [events, setEvents] = useState<EventWithCount[]>(initialEvents);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -21,41 +21,41 @@ export default function PostList({ initialPosts }: PostListProps) {
   });
 
   useEffect(() => {
-    const loadMorePosts = async () => {
+    const loadMoreEvents = async () => {
       if (inView && hasMore && !loading) {
         setLoading(true);
         try {
           const nextPage = page + 1;
-          const response = await fetch(`/api/posts?page=${nextPage}&limit=10`);
+          const response = await fetch(`/api/events?page=${nextPage}&limit=10`);
 
           if (!response.ok) {
-            throw new Error('Failed to fetch more posts');
+            throw new Error('Failed to fetch more events');
           }
 
-          const newPosts = await response.json();
+          const newEvents = await response.json();
 
-          if (newPosts.length === 0) {
+          if (newEvents.length === 0) {
             setHasMore(false);
           } else {
-            setPosts((prevPosts) => [...prevPosts, ...newPosts]);
+            setEvents((prevEvents) => [...prevEvents, ...newEvents]);
             setPage(nextPage);
           }
         } catch (error) {
-          console.error('Error loading more posts:', error);
+          console.error('Error loading more events:', error);
         } finally {
           setLoading(false);
         }
       }
     };
 
-    loadMorePosts();
+    loadMoreEvents();
   }, [inView, hasMore, loading, page]);
 
-  if (posts.length === 0) {
+  if (events.length === 0) {
     return (
       <Box py="6">
         <Text size="3" align="center">
-          No posts found.
+          No events found.
         </Text>
       </Box>
     );
@@ -63,14 +63,14 @@ export default function PostList({ initialPosts }: PostListProps) {
 
   return (
     <Flex direction="column" gap="4">
-      {posts.map((post) => (
-        <PostCard key={post.id} post={post} />
+      {events.map((event) => (
+        <EventCard key={event.id} event={event} />
       ))}
 
       {hasMore && (
         <Box ref={ref} py="4">
           {loading ? (
-            <Text size="2">Loading more posts...</Text>
+            <Text size="2">Loading more events...</Text>
           ) : (
             <Text size="2">Scroll for more</Text>
           )}
@@ -78,4 +78,4 @@ export default function PostList({ initialPosts }: PostListProps) {
       )}
     </Flex>
   );
-}
+};

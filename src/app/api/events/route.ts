@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import * as PostService from '@/lib/services/post';
+import * as EventService from '@/lib/services/event';
 
 export async function GET(request: NextRequest) {
   try {
@@ -8,52 +8,53 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '10');
     const offset = (page - 1) * limit;
 
-    const posts = await PostService.getAll({
+    const events = await EventService.getAll({
       limit,
       offset,
       orderBy: { createdAt: 'desc' },
     });
 
-    return NextResponse.json(posts);
+    return NextResponse.json(events);
   } catch (error) {
-    console.error('Error fetching posts:', error);
-    return NextResponse.json({ error: 'Failed to fetch posts' }, { status: 500 });
+    console.error('Error fetching events:', error);
+    return NextResponse.json({ error: 'Failed to fetch events' }, { status: 500 });
   }
 }
 
-// Add POST method to create a new post
 export async function POST(request: NextRequest) {
   try {
-    const { creatorEns, creatorAddress, header, content, tags } = await request.json();
+    const { creatorEns, creatorAddress, title, description, tags } = await request.json();
 
+    // TODO: Use zod
     // Validate required fields
-    if (!creatorAddress || !header || !content) {
+    if (!creatorAddress || !title || !description) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Create the post
-    const post = await PostService.create({
+    const event = await EventService.create({
       creatorEns,
       creatorAddress,
-      header,
-      content,
+      title,
+      description,
       tags: Array.isArray(tags) ? tags : [],
-      txHash: null,
-      paid: false,
+      eventTime: new Date(),
+      location: null,
+      priceAmount: null,
+      priceCurrency: null,
     });
 
-    return NextResponse.json(post, { status: 201 });
+    return NextResponse.json(event, { status: 201 });
   } catch (error) {
-    console.error('Error creating post:', error);
+    console.error('Error creating event:', error);
 
     // Handle unique constraint violation (duplicate txHash)
     if ((error as Error & { code?: string }).code === 'P2002') {
       return NextResponse.json(
-        { error: 'A post with this transaction hash already exists' },
-        { status: 409 },
+        { error: 'An event with this title already exists' },
+        { status: 409 }
       );
     }
 
-    return NextResponse.json({ error: 'Failed to create post' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to create event' }, { status: 500 });
   }
 }

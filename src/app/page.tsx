@@ -1,12 +1,12 @@
 export const dynamic = 'force-dynamic';
 
 import { Heading, Container, Text } from '@radix-ui/themes';
-import { getAll } from '@/lib/services/post';
-import PostList from '@/components/PostList';
+import { getAll } from '@/lib/services/event';
+import { EventList } from '@/components/EventList';
 import { BOARD_SUB_TITLE, BOARD_TITLE } from '@/constants';
 
 export default async function Home() {
-  const initialPosts = await getAll({ limit: 10 });
+  const initialEvents = await getAll({ limit: 10 });
 
   return (
     <main>
@@ -15,7 +15,7 @@ export default async function Home() {
         <Text as="p" mb="3" color="gray">
           {BOARD_SUB_TITLE}
         </Text>
-        <PostList initialPosts={initialPosts || []} />
+        <EventList initialEvents={initialEvents || []} />
       </Container>
     </main>
   );

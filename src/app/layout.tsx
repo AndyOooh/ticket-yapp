@@ -22,8 +22,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Message Board Yapp',
-  description: 'Message Board Yapp',
+  title: 'Ticketing Yapp',
+  description: 'Yodl ticketing mini-app',
 };
 
 export default function RootLayout({
@@ -43,11 +43,11 @@ export default function RootLayout({
                 panelBackground="translucent"
                 radius="large"
               >
-                <BackgroundWrapper>
+                {/* <BackgroundWrapper> */}
                   <ToastProvider>
                     <AppLayout>{children}</AppLayout>
                   </ToastProvider>
-                </BackgroundWrapper>
+                {/* </BackgroundWrapper> */}
               </Theme>
             </NextThemeProvider>
           </UserContextProvider>

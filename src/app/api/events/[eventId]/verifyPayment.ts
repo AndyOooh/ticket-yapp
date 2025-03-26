@@ -1,12 +1,12 @@
 import { POST_FEE } from '@/constants';
-import { PaymentSimple, PostExtended } from '@/types';
+import { PaymentSimple, EventExtended } from '@/types';
 import { isAddressEqual } from 'viem';
 import { Address } from 'viem';
 
 export const verifyPayment = (
   payment: PaymentSimple,
   receiverAddress: Address,
-  post: PostExtended | null
+  post: EventExtended | null
 ): boolean => {
   if (!post) return false;
   if (!isAddressEqual(payment.receiverAddress as Address, receiverAddress)) {
