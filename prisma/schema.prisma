@@ -17,8 +17,8 @@ model Event {
   eventTime      DateTime @map("event_time") // When the event will occur
   location       String? // Physical or virtual location
   capacity       Int? // Optional max number of tickets
-  priceAmount    Decimal @map("price_amount") @db.Decimal(10, 2) // Amount of the ticket price with 2 decimal places
-  priceCurrency  String  @map("price_currency") // Currency of the ticket price (e.g., "ETH", "USDC", "USD")
+  priceAmount    Float    @map("price_amount") // Amount of the ticket price
+  priceCurrency  String   @map("price_currency") // Fiat currency of the ticket price (e.g., "USD")
   tags           String[] // Array of tags
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @default(now()) @updatedAt @map("updated_at")

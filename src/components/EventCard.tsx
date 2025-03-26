@@ -9,7 +9,7 @@ import {
   PersonIcon,
   LockOpen1Icon,
   AccessibilityIcon,
-  SewingPinFilledIcon,
+  DrawingPinIcon,
 } from '@radix-ui/react-icons';
 import { EventWithCount } from '@/types';
 
@@ -63,7 +63,7 @@ export const EventCard = ({ event }: EventCardProps) => {
         <Flex justify="between" gap="2">
           {location && (
             <Flex align="center" gap="1">
-              <SewingPinFilledIcon />
+              <DrawingPinIcon />
               <Text size="2" truncate>
                 {location}
               </Text>

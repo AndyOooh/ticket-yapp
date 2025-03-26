@@ -28,36 +28,36 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   }
 }
 
-export async function PUT(request: NextRequest, { params }: RouteParams) {
-  try {
-    const { postId } = await params;
-    const postIdInt = parseInt(postId);
-    const { txHash } = await request.json();
+// export async function PUT(request: NextRequest, { params }: RouteParams) {
+//   try {
+//     const { postId } = await params;
+//     const postIdInt = parseInt(postId);
+//     const { txHash } = await request.json();
 
-    if (isNaN(postIdInt)) return NextResponse.json({ error: 'Invalid post ID' }, { status: 400 });
-    if (!txHash) return NextResponse.json({ error: 'No txHash provided' }, { status: 400 });
+//     if (isNaN(postIdInt)) return NextResponse.json({ error: 'Invalid post ID' }, { status: 400 });
+//     if (!txHash) return NextResponse.json({ error: 'No txHash provided' }, { status: 400 });
 
-    const payment = await getPayment(txHash);
-    console.log('🚀 payment:', payment);
-    const post = await PostService.getById(postIdInt);
+//     const payment = await getPayment(txHash);
+//     console.log('🚀 payment:', payment);
+//     const post = await PostService.getById(postIdInt);
 
-    const isValidPayment = verifyPayment(payment, POST_FEE.address, post);
+//     const isValidPayment = verifyPayment(payment, POST_FEE.address, post);
 
-    if (!isValidPayment) {
-      return NextResponse.json({ error: 'Invalid payment' }, { status: 400 });
-    }
+//     if (!isValidPayment) {
+//       return NextResponse.json({ error: 'Invalid payment' }, { status: 400 });
+//     }
 
-    const updatedPost = await PostService.update(postIdInt, {
-      txHash,
-      paid: true,
-    });
+//     const updatedPost = await PostService.update(postIdInt, {
+//       txHash,
+//       paid: true,
+//     });
 
-    return NextResponse.json(updatedPost);
-  } catch (error) {
-    console.error('Error updating post:', error);
-    return NextResponse.json({ error: 'Failed to update post' }, { status: 500 });
-  }
-}
+//     return NextResponse.json(updatedPost);
+//   } catch (error) {
+//     console.error('Error updating post:', error);
+//     return NextResponse.json({ error: 'Failed to update post' }, { status: 500 });
+//   }
+// }
 
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {

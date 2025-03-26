@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import Decimal from 'decimal.js';
 
 const prisma = new PrismaClient();
 
@@ -22,8 +21,8 @@ async function main() {
       eventTime: new Date(Date.now() + 7 * ONE_DAY), // One week from now
       location: 'Blockchain Hub, 123 Crypto St, San Francisco',
       capacity: 50,
-      priceAmount: new Decimal('0.05'),
-      priceCurrency: 'ETH',
+      priceAmount: 0.05,
+      priceCurrency: 'EUR',
       tags: ['web3', 'developer', 'blockchain', 'networking'],
       createdAt: new Date(Date.now() - 14 * ONE_DAY), // Created two weeks ago
       updatedAt: new Date(Date.now() - 14 * ONE_DAY),
@@ -40,8 +39,8 @@ async function main() {
       eventTime: new Date(Date.now() + 14 * ONE_DAY), // Two weeks from now
       location: 'Virtual - Metaverse Gallery',
       capacity: 100,
-      priceAmount: new Decimal('10.00'),
-      priceCurrency: 'USDC',
+      priceAmount: 10.0,
+      priceCurrency: 'USD',
       tags: ['nft', 'art', 'metaverse', 'digital'],
       createdAt: new Date(Date.now() - 10 * ONE_DAY), // Created ten days ago
       updatedAt: new Date(Date.now() - 10 * ONE_DAY),
