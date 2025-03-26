@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Event model
+model Event {
+  id             Int      @id @default(autoincrement())
+  creatorEns     String?  @map("creator_ens") // ENS of the event creator - optional
+  creatorAddress String   @map("creator_address") // Ethereum address of the event creator
+  title          String   @db.VarChar(100) // Max 100 chars
+  description    String   @db.Text // Longer description
+  eventTime      DateTime @map("event_time") // When the event will occur
+  location       String? // Physical or virtual location
+  capacity       Int? // Optional max number of tickets
+  priceAmount    Decimal? @map("price_amount") @db.Decimal(10, 2) // Amount of the ticket price with 2 decimal places
+  priceCurrency  String?  @map("price_currency") // Currency of the ticket price (e.g., "ETH", "USDC", "USD")
+  tags           String[] // Array of tags
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // Relations
+  tickets Ticket[]
+
+  @@index([creatorAddress])
+  @@index([tags])
+  @@index([eventTime])
+}
+
+// Ticket model
+model Ticket {
+  id           Int      @id @default(autoincrement())
+  eventId      Int      @map("event_id")
+  ownerEns     String?  @map("owner_ens") // ENS of the ticket owner - optional
+  ownerAddress String   @map("owner_address") // Ethereum address of the ticket owner
+  txHash       String?  @unique @map("tx_hash") // Ethereum tx hash - nullable
+  paid         Boolean  @default(false)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
+  // Relations
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+  @@index([ownerAddress])
+}
