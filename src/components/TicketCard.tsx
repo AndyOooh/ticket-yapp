@@ -5,13 +5,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { Flex, Text, Heading, Badge, Box, Avatar, Card, Separator } from '@radix-ui/themes';
 import { TAGS } from '@/constants';
 import { truncateAddress } from '@/lib/utils';
-import {
-  PersonIcon,
-  LockOpen1Icon,
-  AccessibilityIcon,
-  DrawingPinIcon,
-} from '@radix-ui/react-icons';
-import { Ticket } from '@prisma/client';
+import { PersonIcon, LockOpen1Icon, DrawingPinIcon } from '@radix-ui/react-icons';
 import { TicketWithEvent } from '@/types';
 import { QrCode } from './QrCode';
 
@@ -84,7 +78,7 @@ export const TicketCard = ({ ticket }: TicketCardProps) => {
         <Separator size="4" />
 
         <Flex width="90%" height="90%" p="4" justify="center" align="center" mx="auto">
-          <QrCode />
+          <QrCode ticket={ticket} />
         </Flex>
       </Flex>
     </Card>

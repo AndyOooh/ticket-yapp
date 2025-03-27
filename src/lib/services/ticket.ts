@@ -58,3 +58,58 @@ export async function deleteTicket(id: number) {
     where: { id },
   });
 }
+
+export async function validateTicket(
+  id: number,
+  token: string
+): Promise<{
+  valid: boolean;
+  ticket: TicketWithEvent | null;
+  message: string;
+}> {
+  try {
+    // Get the ticket with its event
+    const ticket = await getTicketById(id);
+
+    // Check if ticket exists
+    if (!ticket) {
+      return { valid: false, ticket: null, message: 'Ticket not found' };
+    }
+
+    // Check if token matches
+    if (ticket.validationToken !== token) {
+      return { valid: false, ticket, message: 'Invalid validation token' };
+    }
+
+    // Check if already redeemed
+    if (ticket.redeemed) {
+      return { valid: false, ticket, message: 'Ticket already used' };
+    }
+
+    // Check if paid (if payment is required)
+    if (!ticket.paid) {
+      return { valid: false, ticket, message: 'Ticket not paid' };
+    }
+
+    // Mark ticket as redeemed
+    const updatedTicket = await prisma.ticket.update({
+      where: { id },
+      data: {
+        redeemed: true,
+        updatedAt: new Date(),
+      },
+      include: {
+        event: true,
+      },
+    });
+
+    return {
+      valid: true,
+      ticket: updatedTicket,
+      message: 'Ticket validated successfully',
+    };
+  } catch (error) {
+    console.error('Error validating ticket:', error);
+    return { valid: false, ticket: null, message: 'Server error during validation' };
+  }
+}
