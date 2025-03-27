@@ -1,16 +1,35 @@
 'use client';
 
 import { sdk } from '@/lib/sdk';
-import { createContext, useContext, useEffect, useState } from 'react';
-import { UserContext as UserContextType } from '@yodlpay/yapp-sdk';
+import { isInIframe } from '@yodlpay/yapp-sdk';
+import { createContext, useContext } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
-type UserContextWithLoading = {
-  userContext: UserContextType | null;
-  isLoading: boolean;
+// Use TanStack Query to fetch user context
+const useUserContextQuery = () => {
+  return useQuery({
+    queryKey: ['userContext'],
+    queryFn: async () => {
+      // Skip API call if running in an iframe
+      if (!isInIframe()) {
+        console.log('Not in iframe, skipping user context fetch');
+        return null;
+      }
+
+      try {
+        return await sdk.getUserContext();
+      } catch (error) {
+        console.error('Failed to fetch user context:', error);
+        return null;
+      }
+    },
+  });
 };
 
-const UserContext = createContext<UserContextWithLoading | undefined>(undefined);
+// Create a context to provide the query result
+const UserContext = createContext<ReturnType<typeof useUserContextQuery> | undefined>(undefined);
 
+// Hook to use the context
 export function useUserContext() {
   const context = useContext(UserContext);
   if (context === undefined) {
@@ -19,24 +38,8 @@ export function useUserContext() {
   return context;
 }
 
+// Provider component
 export function UserContextProvider({ children }: { children: React.ReactNode }) {
-  const [userContext, setUserContext] = useState<UserContextType | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchUserContext = async () => {
-      try {
-        setIsLoading(true);
-        const context = await sdk.getUserContext();
-        setUserContext(context);
-      } catch (error) {
-        console.error('Failed to fetch user context:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchUserContext();
-  }, []);
-
-  return <UserContext.Provider value={{ userContext, isLoading }}>{children}</UserContext.Provider>;
+  const queryResult = useUserContextQuery();
+  return <UserContext.Provider value={queryResult}>{children}</UserContext.Provider>;
 }

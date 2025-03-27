@@ -1,12 +1,12 @@
 export const dynamic = 'force-dynamic';
 
 import { Heading, Container, Text } from '@radix-ui/themes';
-import { getAll } from '@/lib/services/event';
+import { getEvents } from '@/lib/services/event';
 import { EventList } from '@/components/EventList';
 import { BOARD_SUB_TITLE, BOARD_TITLE } from '@/constants';
 
 export default async function Home() {
-  const initialEvents = await getAll({ limit: 10 });
+  const initialEvents = await getEvents({ limit: 10 });
 
   return (
     <main>

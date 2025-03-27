@@ -17,13 +17,13 @@ export function ThemeToggle() {
   if (!isMounted)
     return (
       <Skeleton>
-        <IconButton size="3" radius="full" />
+        <IconButton size="2" radius="full" />
       </Skeleton>
     );
 
   return (
     <IconButton
-      size="3"
+      size="2"
       radius="full"
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
     >

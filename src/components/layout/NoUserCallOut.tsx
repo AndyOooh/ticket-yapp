@@ -5,12 +5,12 @@ import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { Callout, Flex } from '@radix-ui/themes';
 
 export const NoTokenCallOut = () => {
-  const { userContext, isLoading } = useUserContext();
+  const { data: userContext, isLoading } = useUserContext();
 
   if (userContext || isLoading) return null;
 
   return (
-    <Callout.Root size="1" color="red">
+    <Callout.Root size="1" color="red" my="4">
       <Flex gap="2" align="center">
         <Callout.Icon>
           <InfoCircledIcon />

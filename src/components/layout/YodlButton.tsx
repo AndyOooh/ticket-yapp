@@ -23,7 +23,7 @@ const socials = [
 ];
 
 export const YodlButton = () => {
-  const { userContext, isLoading } = useUserContext();
+  const { data: userContext, isLoading } = useUserContext();
 
   const ensAvatar = null;
   return (

@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { generateValidationToken } from '../src/lib/utils';
 
 const prisma = new PrismaClient();
 
@@ -47,7 +48,45 @@ async function main() {
     },
   });
 
-  // Create tickets
+  // Create Vitalik's event
+  const vitalikEvent = await prisma.event.create({
+    data: {
+      creatorEns: 'vitalik.eth',
+      creatorAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+      title: 'Ethereum 2.0 Discussion',
+      description:
+        'Join us for an in-depth discussion about Ethereum 2.0, its roadmap, and implications for developers and users.',
+      eventTime: new Date(Date.now() + 10 * ONE_DAY),
+      location: 'Ethereum Foundation HQ, Zug, Switzerland',
+      capacity: 200,
+      priceAmount: 0.1,
+      priceCurrency: 'ETH',
+      tags: ['ethereum', 'eth2', 'blockchain', 'development'],
+      createdAt: new Date(Date.now() - 5 * ONE_DAY),
+      updatedAt: new Date(Date.now() - 5 * ONE_DAY),
+    },
+  });
+
+  // Create Yodl's event
+  const yodlEvent = await prisma.event.create({
+    data: {
+      creatorEns: 'yodl.eth',
+      creatorAddress: '0x3Fbe48F4314f6817B7Fe39cdAD635E8Dd12ab299',
+      title: 'Web3 Payments Workshop',
+      description:
+        'Learn how to integrate cryptocurrency payments into your applications with this hands-on workshop.',
+      eventTime: new Date(Date.now() + 5 * ONE_DAY),
+      location: 'Online - Zoom',
+      capacity: 75,
+      priceAmount: 15.0,
+      priceCurrency: 'USD',
+      tags: ['payments', 'web3', 'cryptocurrency', 'workshop'],
+      createdAt: new Date(Date.now() - 3 * ONE_DAY),
+      updatedAt: new Date(Date.now() - 3 * ONE_DAY),
+    },
+  });
+
+  // Create tickets with validation tokens
   const ticket1 = await prisma.ticket.create({
     data: {
       eventId: event1.id,
@@ -55,6 +94,8 @@ async function main() {
       ownerAddress: '0x250189C0Af7c0f4CD7871c9a20826eAee4c0a50c',
       txHash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
       paid: true,
+      validationToken: generateValidationToken(),
+      redeemed: false,
       createdAt: new Date(Date.now() - 7 * ONE_DAY),
       updatedAt: new Date(Date.now() - 7 * ONE_DAY),
     },
@@ -67,8 +108,40 @@ async function main() {
       ownerAddress: '0x3BEC0A9CeCAd6315860067325c603861adf740b5',
       txHash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
       paid: false,
+      validationToken: generateValidationToken(),
+      redeemed: false,
       createdAt: new Date(Date.now() - 5 * ONE_DAY),
       updatedAt: new Date(Date.now() - 5 * ONE_DAY),
+    },
+  });
+
+  // Vitalik's ticket for Yodl's event
+  const vitalikTicket = await prisma.ticket.create({
+    data: {
+      eventId: yodlEvent.id,
+      ownerEns: 'vitalik.eth',
+      ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+      txHash: '0xfedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210',
+      paid: true,
+      validationToken: generateValidationToken(),
+      redeemed: false,
+      createdAt: new Date(Date.now() - 2 * ONE_DAY),
+      updatedAt: new Date(Date.now() - 2 * ONE_DAY),
+    },
+  });
+
+  // Yodl's ticket for Vitalik's event
+  const yodlTicket = await prisma.ticket.create({
+    data: {
+      eventId: vitalikEvent.id,
+      ownerEns: 'yodl.eth',
+      ownerAddress: '0x3Fbe48F4314f6817B7Fe39cdAD635E8Dd12ab299',
+      txHash: '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+      paid: true,
+      validationToken: generateValidationToken(),
+      redeemed: true, // This ticket has already been used
+      createdAt: new Date(Date.now() - 3 * ONE_DAY),
+      updatedAt: new Date(Date.now() - 1 * ONE_DAY), // Updated recently (when redeemed)
     },
   });
 

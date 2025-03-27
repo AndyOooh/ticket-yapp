@@ -15,7 +15,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: 'Invalid post ID' }, { status: 400 });
     }
 
-    const post = await PostService.getById(postIdInt);
+    const post = await PostService.getEventById(postIdInt);
 
     if (!post) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 });
@@ -70,7 +70,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: 'Invalid post ID' }, { status: 400 });
     }
 
-    const post = await PostService.getById(postIdInt);
+    const post = await PostService.getEventById(postIdInt);
 
     if (!post) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 });
@@ -81,7 +81,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: 'You are not the creator of this post' }, { status: 403 });
     }
 
-    await PostService.remove(postIdInt);
+    await PostService.deleteEvent(postIdInt);
 
     return NextResponse.json({ success: true });
   } catch (error) {

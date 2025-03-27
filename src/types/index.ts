@@ -16,6 +16,10 @@ export type EventWithTickets = Event & {
   };
 };
 
+export type TicketWithEvent = Ticket & {
+  event: Event;
+};
+
 // From indexer api
 export type PaymentSimple = {
   chainId: number;

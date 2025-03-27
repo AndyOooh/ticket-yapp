@@ -33,14 +33,17 @@ model Event {
 
 // Ticket model
 model Ticket {
-  id           Int      @id @default(autoincrement())
-  eventId      Int      @map("event_id")
-  ownerEns     String?  @map("owner_ens") // ENS of the ticket owner - optional
-  ownerAddress String   @map("owner_address") // Ethereum address of the ticket owner
-  txHash       String?  @unique @map("tx_hash") // Ethereum tx hash - nullable
-  paid         Boolean  @default(false)
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+  id              Int     @id @default(autoincrement())
+  eventId         Int     @map("event_id")
+  ownerEns        String? @map("owner_ens") // ENS of the ticket owner - optional
+  ownerAddress    String  @map("owner_address") // Ethereum address of the ticket owner
+  txHash          String? @unique @map("tx_hash") // Ethereum tx hash - nullable
+  paid            Boolean @default(false)
+  validationToken String? @unique @map("validation_token") // Unique token for validation
+  redeemed        Boolean @default(false) @map("redeemed") // Whether ticket has been used
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   // Relations
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
