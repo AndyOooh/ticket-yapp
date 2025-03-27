@@ -7,7 +7,7 @@ export * from './tag';
 // - currency: The currency in which fees are charged (USD, EUR, etc.)
 // - amount: The cost per post in the specified currency
 // - address: Your wallet address that will receive the fees
-export const POST_FEE = {
+export const CREATE_EVENT_FEE = {
   currency: FiatCurrency.USD,
   amount: 0.01,
   address: '0xDC3Cac69C81161ab8Fea6AB84fE90a7ECa43912A' as Address, // alecity.eth.

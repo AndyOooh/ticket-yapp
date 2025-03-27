@@ -23,7 +23,8 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { creatorEns, creatorAddress, title, description, tags } = await request.json();
+    const { creatorEns, creatorAddress, title, description, tags, priceAmount, priceCurrency } =
+      await request.json();
 
     // TODO: Use zod
     // Validate required fields
@@ -39,8 +40,8 @@ export async function POST(request: NextRequest) {
       tags: Array.isArray(tags) ? tags : [],
       eventTime: new Date(),
       location: null,
-      priceAmount: null,
-      priceCurrency: null,
+      priceAmount,
+      priceCurrency,
     });
 
     return NextResponse.json(event, { status: 201 });
