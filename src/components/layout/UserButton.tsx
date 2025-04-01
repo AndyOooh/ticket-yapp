@@ -22,6 +22,7 @@ const socials = [
 
 export const UserButton = () => {
   const { data: userContext, isLoading } = useUserContext();
+  console.log('🚀 userContext:', userContext);
 
   const ensAvatar = null;
   return (

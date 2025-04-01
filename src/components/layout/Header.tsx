@@ -2,7 +2,7 @@ import { Flex, IconButton, Link } from '@radix-ui/themes';
 import { MdOutlineQrCode } from 'react-icons/md';
 import NextLink from 'next/link';
 import Image from 'next/image';
-import { UserButton } from './YodlButton';
+import { UserButton } from './UserButton';
 import { ThemeToggle } from '../ui/ThemeToggle';
 
 export function Header() {
