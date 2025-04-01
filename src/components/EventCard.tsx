@@ -6,12 +6,8 @@ import { formatDistanceToNow } from 'date-fns';
 import { Flex, Text, Heading, Badge, Box, Avatar, Card, Separator, Button } from '@radix-ui/themes';
 import { TAGS } from '@/constants';
 import { truncateAddress } from '@/lib/utils';
-import {
-  PersonIcon,
-  LockOpen1Icon,
-  AccessibilityIcon,
-  DrawingPinIcon,
-} from '@radix-ui/react-icons';
+import { PersonIcon, AccessibilityIcon, DrawingPinIcon } from '@radix-ui/react-icons';
+import { PiMoneyLight } from 'react-icons/pi';
 import { EventWithCount } from '@/types';
 import { FiatCurrencyString } from '@yodlpay/yapp-sdk';
 import { useBuyTicket } from '@/hooks/useBuyTicket';
@@ -99,7 +95,7 @@ export const EventCard = ({ event }: EventCardProps) => {
 
         <Separator size="4" />
 
-        <Flex justify="between" gap="2">
+        <Flex justify="between" gap="4" wrap="wrap">
           {location && (
             <Flex align="center" gap="1">
               <DrawingPinIcon />
@@ -108,14 +104,15 @@ export const EventCard = ({ event }: EventCardProps) => {
               </Text>
             </Flex>
           )}
-
           <Flex align="center" gap="1">
             <AccessibilityIcon />
             <Text size="2">{capacity ? `${_count.tickets} / ${capacity}` : 'Unlimited'}</Text>
           </Flex>
 
           <Flex align="center" gap="1">
-            <LockOpen1Icon />
+            {/* <LockOpen1Icon /> */}
+            <PiMoneyLight />
+
             <Text size="2">
               {priceAmount?.toString()} {priceCurrency}
             </Text>

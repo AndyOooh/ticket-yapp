@@ -29,7 +29,6 @@ export default function CreateEventPage() {
   const router = useRouter();
   const toast = useToast();
   const { data: userContext } = useUserContext();
-  console.log('🚀 userContext:', userContext);
 
   const currencies = ['USD', 'EUR', 'ETH', 'USDC'];
 
@@ -95,12 +94,14 @@ export default function CreateEventPage() {
       return;
     }
 
+    const eventTime = new Date(formData.eventTime).toISOString();
+
     const eventData = {
       creatorEns: userContext.primaryEnsName,
       creatorAddress: userContext.address,
       title: formData.title,
       description: formData.description,
-      eventTime: new Date(formData.eventTime).toISOString(),
+      eventTime,
       location: formData.location || null,
       capacity: formData.capacity ? parseInt(formData.capacity) : null,
       priceAmount: parseFloat(formData.priceAmount) || 0,
