@@ -9,20 +9,18 @@ import { truncateAddress } from '@/lib/utils';
 
 const socials = [
   {
-    // label: "GitHub",
     label: 'AndyOooh/ticket-yapp',
     href: 'https://github.com/AndyOooh/ticket-yapp',
     icon: FaGithub,
   },
   {
-    // label: "Twitter",
     label: '@yodlpay',
     href: 'https://x.com/yodlpay',
     icon: FaTwitter,
   },
 ];
 
-export const YodlButton = () => {
+export const UserButton = () => {
   const { data: userContext, isLoading } = useUserContext();
 
   const ensAvatar = null;
@@ -60,9 +58,7 @@ export const YodlButton = () => {
             <DropdownMenu.Label>User</DropdownMenu.Label>
             <DropdownMenu.Item>
               Address:
-              <Code>
-                {userContext.address.slice(0, 4)}...{userContext.address.slice(-4)}
-              </Code>
+              <Code>{truncateAddress(userContext.address)}</Code>
             </DropdownMenu.Item>
 
             {userContext.primaryEnsName && (

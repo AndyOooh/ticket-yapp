@@ -1,10 +1,8 @@
 import { Flex, IconButton, Link } from '@radix-ui/themes';
-import { PlusIcon } from '@radix-ui/react-icons';
-import { IoTicketOutline } from 'react-icons/io5';
 import { MdOutlineQrCode } from 'react-icons/md';
 import NextLink from 'next/link';
 import Image from 'next/image';
-import { YodlButton } from './YodlButton';
+import { UserButton } from './YodlButton';
 import { ThemeToggle } from '../ui/ThemeToggle';
 
 export function Header() {
@@ -22,13 +20,7 @@ export function Header() {
             <MdOutlineQrCode />
           </IconButton>
         </NextLink>
-        {/* <NextLink href="/tickets" passHref className="bg-gray-400 rounded-full">
-          <IconButton size="2" radius="full">
-            <IoTicketOutline />
-          </IconButton>
-        </NextLink> */}
-
-        <YodlButton />
+        <UserButton />
       </Flex>
     </Flex>
   );

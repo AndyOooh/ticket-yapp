@@ -16,7 +16,6 @@ interface BuyTicketParams extends CreateTicketParams {
 }
 
 const createTicket = async (params: CreateTicketParams) => {
-  console.log('🚀 params:', params);
   const response = await fetch('/api/tickets', {
     method: 'POST',
     headers: {
@@ -33,14 +32,12 @@ const createTicket = async (params: CreateTicketParams) => {
 };
 
 export function useBuyTicket() {
-  console.log('🚀 useBuyTicket:');
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (params: BuyTicketParams) => {
       // 1. Create unpaid ticket
       const ticket = await createTicket(params);
-      console.log('🚀 ticket:', ticket);
 
       // 2. Request payment via SDK
       const { txHash, chainId } = await sdk.requestPayment(params.ownerEns || params.ownerAddress, {
@@ -60,7 +57,6 @@ export function useBuyTicket() {
         body: JSON.stringify({ txHash, chainId }),
       });
 
-      console.log('✅ updateResponse:', updateResponse);
       if (!updateResponse.ok) {
         throw new Error('Failed to update ticket payment info');
       }

@@ -8,7 +8,6 @@ import { ACCENT_COLOR } from '@/constants';
 import { ToastProvider } from '@/providers/ToastProvider';
 import { TanStackProvider } from '@/providers/TanStackProvider';
 import { ThemeProvider as NextThemeProvider } from 'next-themes';
-import { BackgroundWrapper } from '@/components/layout/BackgroundProvider';
 import { UserContextProvider } from '@/providers/UserContextProvider';
 
 const geistSans = Geist({
@@ -43,11 +42,9 @@ export default function RootLayout({
                 panelBackground="translucent"
                 radius="large"
               >
-                {/* <BackgroundWrapper> */}
-                  <ToastProvider>
-                    <AppLayout>{children}</AppLayout>
-                  </ToastProvider>
-                {/* </BackgroundWrapper> */}
+                <ToastProvider>
+                  <AppLayout>{children}</AppLayout>
+                </ToastProvider>
               </Theme>
             </NextThemeProvider>
           </UserContextProvider>

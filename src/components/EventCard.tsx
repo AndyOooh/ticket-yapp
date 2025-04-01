@@ -31,7 +31,6 @@ export const EventCard = ({ event }: EventCardProps) => {
     creatorAddress,
     title,
     description,
-    createdAt,
     tags,
     capacity,
     eventTime,
