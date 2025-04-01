@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import * as PostService from '@/lib/services/event';
 import { getPayment } from '@/lib/services/indexerApi';
-import { verifyPayment } from './verifyPayment';
-import { CREATE_EVENT_FEE } from '@/constants';
+import { verifyPayment } from '@/lib/utils';
 
 type RouteParams = { params: Promise<{ postId: string }> };
 

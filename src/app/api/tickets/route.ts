@@ -1,6 +1,6 @@
 // src/app/api/tickets/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { getTickets } from '@/lib/services/ticket';
+import { createTicket, getTickets } from '@/lib/services/ticket';
 import { Address } from 'viem';
 
 export async function GET(request: NextRequest) {
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     const tickets = await getTickets({
       limit,
       offset,
-      where: { ownerAddress },
+      where: { ownerAddress, paid: true },
     });
 
     return NextResponse.json(tickets);
@@ -27,4 +27,20 @@ export async function GET(request: NextRequest) {
     console.error('Error fetching tickets:', error);
     return NextResponse.json({ error: 'Failed to fetch tickets' }, { status: 500 });
   }
+}
+
+export async function POST(request: NextRequest) {
+  const { eventId, ownerAddress, ownerEns } = await request.json();
+
+  const ticket = await createTicket({
+    event: {
+      connect: { id: eventId },
+    },
+    ownerEns,
+    ownerAddress,
+    paid: false,
+    redeemed: false,
+  });
+
+  return NextResponse.json(ticket);
 }

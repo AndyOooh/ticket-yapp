@@ -40,7 +40,7 @@ async function main() {
       eventTime: new Date(Date.now() + 14 * ONE_DAY), // Two weeks from now
       location: 'Virtual - Metaverse Gallery',
       capacity: 100,
-      priceAmount: 10.0,
+      priceAmount: 0.02,
       priceCurrency: 'USD',
       tags: ['nft', 'art', 'metaverse', 'digital'],
       createdAt: new Date(Date.now() - 10 * ONE_DAY), // Created ten days ago
@@ -57,10 +57,10 @@ async function main() {
       description:
         'Join us for an in-depth discussion about Ethereum 2.0, its roadmap, and implications for developers and users.',
       eventTime: new Date(Date.now() + 10 * ONE_DAY),
-      location: 'Ethereum Foundation HQ, Zug, Switzerland',
+      location: 'Eth Foundation HQ, Zug',
       capacity: 200,
-      priceAmount: 0.1,
-      priceCurrency: 'ETH',
+      priceAmount: 0.01,
+      priceCurrency: 'CHF',
       tags: ['ethereum', 'eth2', 'blockchain', 'development'],
       createdAt: new Date(Date.now() - 5 * ONE_DAY),
       updatedAt: new Date(Date.now() - 5 * ONE_DAY),

@@ -50,6 +50,13 @@ export const YodlButton = () => {
       <DropdownMenu.Content>
         {userContext ? (
           <>
+            <DropdownMenu.Label>Pages</DropdownMenu.Label>
+            <DropdownMenu.Item>
+              <Link href="/events">My Events</Link>
+            </DropdownMenu.Item>
+            <DropdownMenu.Item>
+              <Link href="/tickets">My Tickets</Link>
+            </DropdownMenu.Item>
             <DropdownMenu.Label>User</DropdownMenu.Label>
             <DropdownMenu.Item>
               Address:

@@ -40,7 +40,7 @@ export async function getTicketById(id: number): Promise<TicketWithEvent | null>
   return ticket;
 }
 
-export async function createTicket(data: Prisma.TicketCreateInput) {
+export async function createTicket(data: Omit<Prisma.TicketCreateInput, 'validationToken'>) {
   const validationToken = generateValidationToken();
 
   const ticket = await prisma.ticket.create({
@@ -58,6 +58,16 @@ export async function deleteTicket(id: number) {
     where: { id },
   });
 }
+
+export const updateTicket = async (id: number, data: Prisma.TicketUpdateInput) => {
+  return prisma.ticket.update({
+    where: { id },
+    data,
+    include: {
+      event: true,
+    },
+  });
+};
 
 export async function validateTicket(
   id: number,
@@ -91,17 +101,24 @@ export async function validateTicket(
       return { valid: false, ticket, message: 'Ticket not paid' };
     }
 
+    const data = {
+      redeemed: true,
+      updatedAt: new Date(),
+    };
+
     // Mark ticket as redeemed
-    const updatedTicket = await prisma.ticket.update({
-      where: { id },
-      data: {
-        redeemed: true,
-        updatedAt: new Date(),
-      },
-      include: {
-        event: true,
-      },
-    });
+    const updatedTicket = await updateTicket(id, data);
+
+    // const updatedTicket = await prisma.ticket.update({
+    //   where: { id },
+    //   data: {
+    //     redeemed: true,
+    //     updatedAt: new Date(),
+    //   },
+    //   include: {
+    //     event: true,
+    //   },
+    // });
 
     return {
       valid: true,

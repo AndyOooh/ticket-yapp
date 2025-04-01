@@ -22,16 +22,12 @@ export function Header() {
             <MdOutlineQrCode />
           </IconButton>
         </NextLink>
-        <NextLink href="/tickets" passHref className="bg-gray-400 rounded-full">
+        {/* <NextLink href="/tickets" passHref className="bg-gray-400 rounded-full">
           <IconButton size="2" radius="full">
             <IoTicketOutline />
           </IconButton>
-        </NextLink>
-        <NextLink href="/events/create" passHref className="bg-gray-400 rounded-full">
-          <IconButton size="2" radius="full">
-            <PlusIcon />
-          </IconButton>
-        </NextLink>
+        </NextLink> */}
+
         <YodlButton />
       </Flex>
     </Flex>
