@@ -4,7 +4,8 @@ import { isAddressEqual } from 'viem';
 import { Address } from 'viem';
 import { FiatCurrencyString } from '@yodlpay/yapp-sdk';
 
-export const truncateAddress = (address: string) => {
+export const truncateAddress = (address?: string) => {
+  if (!address) return '';
   return address.slice(0, 6) + '...' + address.slice(-4);
 };
 
