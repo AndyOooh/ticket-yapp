@@ -17,8 +17,10 @@ type Params = { params: Promise<{ id: string }> };
 export default async function EventPage({ params }: Params) {
   const { id } = await params;
   const eventId = Number(id);
+  console.log('🚀 eventId:', eventId);
 
   const event = await getEventById(eventId); // should use hook instead if client comp.
+  console.log('🚀 event:', event);
   if (!event) return notFound();
 
   return <div>{event.title}</div>;

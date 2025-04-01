@@ -1,85 +1,114 @@
 'use client';
 
 import Link from 'next/link';
-import { formatDistanceToNow } from 'date-fns';
-import { Flex, Text, Heading, Badge, Box, Avatar, Card, Separator } from '@radix-ui/themes';
-import { TAGS } from '@/constants';
+import { format } from 'date-fns';
+import {
+  Flex,
+  Text,
+  Heading,
+  Card,
+  Separator,
+  Button,
+  Link as RadixLink,
+  Dialog,
+} from '@radix-ui/themes';
 import { truncateAddress } from '@/lib/utils';
-import { PersonIcon, LockOpen1Icon, DrawingPinIcon } from '@radix-ui/react-icons';
+import { ExternalLinkIcon, CrossCircledIcon } from '@radix-ui/react-icons';
 import { TicketWithEvent } from '@/types';
 import { QrCode } from './QrCode';
+import { useState } from 'react';
+import { getChain } from '@yodlpay/tokenlists';
 
 type TicketCardProps = {
   ticket: TicketWithEvent;
 };
 
 export const TicketCard = ({ ticket }: TicketCardProps) => {
-  const { createdAt, eventId, id, ownerAddress, ownerEns, paid, txHash, updatedAt, event } = ticket;
+  const { createdAt, id, ownerAddress, ownerEns, paid, txHash, chainId, event } = ticket;
+  const [open, setOpen] = useState(false);
+
+  const explorerUrl = `${getChain(chainId!).explorerUrl}/${txHash}`;
 
   return (
     <Card>
       <Flex direction="column" gap="3">
-        <Flex justify="between" align="center">
+        <Flex direction="column" align="center" py="2">
+          <Text size="1" color="gray" weight="medium">
+            {event.title}
+          </Text>
+          <Heading size="6" mt="1">
+            TICKET #{id}
+          </Heading>
+        </Flex>
+
+        <Separator size="4" />
+
+        <Flex direction="column" gap="2">
+          <Text size="2">
+            <Text weight="bold">Issued to:</Text> {ownerEns ?? truncateAddress(ownerAddress)}
+          </Text>
+
           <Flex align="center" gap="2">
-            <Avatar fallback={event.creatorEns?.substring(0, 2) ?? <PersonIcon />} size="2" />
-            <Text size="2" color="gray">
-              {event.creatorEns ?? truncateAddress(event.creatorAddress)}
+            <Text size="2">
+              <Text weight="bold">Issued on:</Text> {format(new Date(createdAt), 'PP')}
             </Text>
           </Flex>
-          <Text size="1" color="gray" align="right">
-            {formatDistanceToNow(new Date(event.eventTime), { addSuffix: true })}
+          <Flex align="center" gap="2">
+            <Text size="2">
+              <Text weight="bold">Price:</Text> {event.priceAmount?.toString()}{' '}
+              {event.priceCurrency}
+            </Text>
+            {explorerUrl && (
+              <Flex align="center" gap="2">
+                <RadixLink asChild size="2">
+                  <a href={explorerUrl} target="_blank" rel="noopener noreferrer">
+                    View Transaction
+                  </a>
+                </RadixLink>
+              </Flex>
+            )}
+          </Flex>
+        </Flex>
+
+        <Separator size="4" />
+
+        <Flex align="center" gap="2">
+          <Text size="2">
+            <Text weight="bold">Location:</Text> {event.location}
+          </Text>
+        </Flex>
+        <Flex align="center" gap="2">
+          <Text size="2">
+            <Text weight="bold">Time:</Text> {format(new Date(event.eventTime), "PPP 'at' p")}
           </Text>
         </Flex>
 
-        <Link href={`/tickets/${id}`}>
-          <Box>
-            <Heading size="4">{event.title}</Heading>
-            <Text color="gray" size="2" mb="2" className="line-clamp-2">
-              {event.description}
-            </Text>
-          </Box>
+        <Link href={`/events/${event.id}`} style={{ textDecoration: 'none' }}>
+          <Button size="1" variant="soft" style={{ width: '100%' }}>
+            <ExternalLinkIcon />
+            View Event Details
+          </Button>
         </Link>
 
         <Separator size="4" />
 
-        <Flex justify="between" gap="2">
-          {location && (
-            <Flex align="center" gap="1">
-              <DrawingPinIcon />
-              <Text size="2" truncate>
-                {event.location}
-              </Text>
+        <Dialog.Root>
+          <Dialog.Trigger>
+            <Button variant="solid" size="3">
+              Show QR Code
+            </Button>
+          </Dialog.Trigger>
+
+          <Dialog.Content>
+            <Flex justify="between" align="start">
+              <Dialog.Title>Ticket QR Code</Dialog.Title>
+              <Dialog.Close>
+                <CrossCircledIcon width="24" height="24" />
+              </Dialog.Close>
             </Flex>
-          )}
-
-          {/* <Flex align="center" gap="1">
-            <AccessibilityIcon />
-            <Text size="2">
-              {event.capacity ? `${event._count.tickets} / ${event.capacity}` : 'Unlimited'}
-            </Text>
-          </Flex> */}
-
-          <Flex align="center" gap="1">
-            <LockOpen1Icon />
-            <Text size="2">
-              {event.priceAmount?.toString()} {event.priceCurrency}
-            </Text>
-          </Flex>
-        </Flex>
-
-        <Flex gap="2" wrap="wrap">
-          {event.tags.map((tag) => (
-            <Badge key={tag} variant="soft" color={TAGS.find((t) => t.name === tag)?.color}>
-              {tag}
-            </Badge>
-          ))}
-        </Flex>
-
-        <Separator size="4" />
-
-        <Flex width="90%" height="90%" p="4" justify="center" align="center" mx="auto">
-          <QrCode ticket={ticket} />
-        </Flex>
+            <QrCode ticket={ticket} />
+          </Dialog.Content>
+        </Dialog.Root>
       </Flex>
     </Card>
   );

@@ -4,7 +4,7 @@ import { Flex, Heading } from '@radix-ui/themes';
 export default function TicketsPage() {
   return (
     <Flex direction="column" gap="4">
-      <Heading size="6">Tickets</Heading>
+      <Heading size="6">My Tickets</Heading>
       <TicketList />
     </Flex>
   );

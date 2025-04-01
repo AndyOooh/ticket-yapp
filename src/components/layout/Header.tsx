@@ -27,7 +27,7 @@ export function Header() {
             <IoTicketOutline />
           </IconButton>
         </NextLink>
-        <NextLink href="/create" passHref className="bg-gray-400 rounded-full">
+        <NextLink href="/events/create" passHref className="bg-gray-400 rounded-full">
           <IconButton size="2" radius="full">
             <PlusIcon />
           </IconButton>

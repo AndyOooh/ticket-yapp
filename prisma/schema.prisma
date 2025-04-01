@@ -38,6 +38,7 @@ model Ticket {
   ownerEns        String? @map("owner_ens") // ENS of the ticket owner - optional
   ownerAddress    String  @map("owner_address") // Ethereum address of the ticket owner
   txHash          String? @unique @map("tx_hash") // Ethereum tx hash - nullable
+  chainId         Int?    @map("chain_id") // Blockchain network ID - nullable
   paid            Boolean @default(false)
   validationToken String? @unique @map("validation_token") // Unique token for validation
   redeemed        Boolean @default(false) @map("redeemed") // Whether ticket has been used

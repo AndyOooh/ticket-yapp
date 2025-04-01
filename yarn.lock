@@ -2289,10 +2289,10 @@
   resolved "https://registry.yarnpkg.com/@yodlpay/tokenlists/-/tokenlists-0.8.11.tgz#4bea99237c481e84e7b7882b1698a3d76c53e4c2"
   integrity sha512-Ce12MyH4YVI2AGjXIpiGiKXB+pH+r4fv8n+uCX3P5U3uyzAQAet4Zc32o5iC9PKNlx2dIqKhdXh2K8buFthOqQ==
 
-"@yodlpay/yapp-sdk@^1.4.0":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@yodlpay/yapp-sdk/-/yapp-sdk-1.4.1.tgz#270038274180ef5cc393808d0b04a837a9c41cb4"
-  integrity sha512-X3aFo0LLhFYHqh3mPsMOe77kMO5Ave1RNHxhFUvIdzPSehcTSG/RKXljNYd3wun97b7W50+sFcgFeSUNRMxT1Q==
+"@yodlpay/yapp-sdk@1.6.5":
+  version "1.6.5"
+  resolved "https://registry.yarnpkg.com/@yodlpay/yapp-sdk/-/yapp-sdk-1.6.5.tgz#65b17a3e3173dc1344e95716af6f9050886fac1a"
+  integrity sha512-XRt/HTAF+jMlBQXrMk2PEbM/E7bnRyDLaVY8m9iFztpzvle/rFXp5eu4P6oBRulIfumoc7yGCflIQVg+BfJVXg==
   dependencies:
     jose "5.x"
 

@@ -9,8 +9,8 @@ import { useUserTickets } from '@/hooks/useUserTickets';
 
 export const TicketList = () => {
   const { data: userContext, isLoading: isUserLoading } = useUserContext();
-  // const ownerAddress = userContext?.address;
-  const ownerAddress = '0x3BEC0A9CeCAd6315860067325c603861adf740b5';
+  const ownerAddress = userContext?.address;
+  // const ownerAddress = '0x3BEC0A9CeCAd6315860067325c603861adf740b5';
 
   const [page, setPage] = useState(1);
   const offset = (page - 1) * 10; // Using default limit of 10

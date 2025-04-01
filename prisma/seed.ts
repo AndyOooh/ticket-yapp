@@ -93,6 +93,7 @@ async function main() {
       ownerEns: 'andy.yodl.eth',
       ownerAddress: '0x250189C0Af7c0f4CD7871c9a20826eAee4c0a50c',
       txHash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+      chainId: 8453, // Base
       paid: true,
       validationToken: generateValidationToken(),
       redeemed: false,
@@ -107,6 +108,7 @@ async function main() {
       ownerEns: 'andyoee.yodl.eth',
       ownerAddress: '0x3BEC0A9CeCAd6315860067325c603861adf740b5',
       txHash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
+      chainId: 10, // Optimism
       paid: false,
       validationToken: generateValidationToken(),
       redeemed: false,
@@ -122,6 +124,7 @@ async function main() {
       ownerEns: 'vitalik.eth',
       ownerAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       txHash: '0xfedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210',
+      chainId: 137, // Polygon
       paid: true,
       validationToken: generateValidationToken(),
       redeemed: false,
@@ -137,6 +140,7 @@ async function main() {
       ownerEns: 'yodl.eth',
       ownerAddress: '0x3Fbe48F4314f6817B7Fe39cdAD635E8Dd12ab299',
       txHash: '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+      chainId: 42161, // Arbitrum
       paid: true,
       validationToken: generateValidationToken(),
       redeemed: true, // This ticket has already been used
