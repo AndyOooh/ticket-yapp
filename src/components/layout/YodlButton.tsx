@@ -10,8 +10,8 @@ import { truncateAddress } from '@/lib/utils';
 const socials = [
   {
     // label: "GitHub",
-    label: 'AndyOooh/messageboard-yapp',
-    href: 'https://github.com/AndyOooh/messageboard-yapp',
+    label: 'AndyOooh/ticket-yapp',
+    href: 'https://github.com/AndyOooh/ticket-yapp',
     icon: FaGithub,
   },
   {
