@@ -10,16 +10,16 @@ export function Header() {
     <Flex py="4" px="4" justify="between" align="center" gap="1">
       <Flex align="center" gap="2" className="flex-1">
         <ThemeToggle />
-      </Flex>
-      <Link href="/">
-        <Image src="/yodl-logo.png" alt="logo" width={44} height={44} className="rounded-full" />
-      </Link>
-      <Flex gap="2" align="center" justify="end" className="flex-1">
         <NextLink href="/scan" passHref className="bg-gray-400 rounded-full">
           <IconButton size="2" radius="full">
             <MdOutlineQrCode />
           </IconButton>
         </NextLink>
+      </Flex>
+      <Link href="/">
+        <Image src="/yodl-logo.png" alt="logo" width={44} height={44} className="rounded-full" />
+      </Link>
+      <Flex gap="2" align="center" justify="end" className="flex-1">
         <UserButton />
       </Flex>
     </Flex>

@@ -65,7 +65,7 @@ export const EventCard = ({ event }: EventCardProps) => {
   };
 
   return (
-    <Card>
+    <Card className="bg-[var(--accent-1)]">
       <Flex direction="column" gap="3">
         <Flex justify="between" align="center">
           <Flex align="center" gap="2">

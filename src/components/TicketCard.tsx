@@ -13,10 +13,9 @@ import {
   Dialog,
 } from '@radix-ui/themes';
 import { truncateAddress } from '@/lib/utils';
-import { ExternalLinkIcon, CrossCircledIcon } from '@radix-ui/react-icons';
+import {  CrossCircledIcon } from '@radix-ui/react-icons';
 import { TicketWithEvent } from '@/types';
 import { QrCode } from './QrCode';
-import { useState } from 'react';
 import { getChain } from '@yodlpay/tokenlists';
 
 type TicketCardProps = {
@@ -24,10 +23,9 @@ type TicketCardProps = {
 };
 
 export const TicketCard = ({ ticket }: TicketCardProps) => {
-  const { createdAt, id, ownerAddress, ownerEns, paid, txHash, chainId, event } = ticket;
-  const [open, setOpen] = useState(false);
+  const { createdAt, id, ownerAddress, ownerEns, txHash, chainId, event } = ticket;
 
-  const explorerUrl = `${getChain(chainId!).explorerUrl}/${txHash}`;
+  const explorerUrl = `${getChain(chainId!).explorerUrl}/tx/${txHash}`;
 
   return (
     <Card>
@@ -55,17 +53,18 @@ export const TicketCard = ({ ticket }: TicketCardProps) => {
           </Flex>
           <Flex align="center" gap="2">
             <Text size="2">
-              <Text weight="bold">Price:</Text> {event.priceAmount?.toString()}{' '}
-              {event.priceCurrency}
+              <Text weight="bold">Paid:</Text> {event.priceAmount?.toString()} {event.priceCurrency}
             </Text>
             {explorerUrl && (
-              <Flex align="center" gap="2">
-                <RadixLink asChild size="2">
-                  <a href={explorerUrl} target="_blank" rel="noopener noreferrer">
-                    View Transaction
-                  </a>
+              <>
+                <RadixLink size="2" href={explorerUrl} target="_blank">
+                  Explorer
                 </RadixLink>
-              </Flex>
+                <Separator orientation="vertical" />
+                <RadixLink size="2" href={`https://yodl.me/tx/${txHash}`} target="_blank">
+                  Yodl
+                </RadixLink>
+              </>
             )}
           </Flex>
         </Flex>
@@ -85,8 +84,7 @@ export const TicketCard = ({ ticket }: TicketCardProps) => {
 
         <Link href={`/events/${event.id}`} style={{ textDecoration: 'none' }}>
           <Button size="1" variant="soft" style={{ width: '100%' }}>
-            <ExternalLinkIcon />
-            View Event Details
+            Go to event
           </Button>
         </Link>
 

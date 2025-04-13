@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   //   return config;
   // },
   images: {
-    domains: ['example.com'],
+    domains: ['cdn.justaname.id'],
   },
 };
 

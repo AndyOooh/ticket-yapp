@@ -93,7 +93,7 @@ export async function validateTicket(
 
     // Check if already redeemed
     if (ticket.redeemed) {
-      return { valid: false, ticket, message: 'Ticket already used' };
+      return { valid: false, ticket, message: 'Ticket already redeemed' };
     }
 
     // Check if paid (if payment is required)
