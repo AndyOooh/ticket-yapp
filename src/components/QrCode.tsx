@@ -1,4 +1,3 @@
-import { YAPP_URL } from '@/constants';
 import { TicketWithEvent } from '@/types';
 import { Cuer } from 'cuer';
 import Image from 'next/image';
@@ -8,7 +7,7 @@ type QrCodeProps = {
 };
 
 export const QrCode = ({ ticket }: QrCodeProps) => {
-  const url = `${YAPP_URL}/api/tickets/validate?ticketId=${ticket.id}&token=${ticket.validationToken}`;
+  const url = `${process.env.NEXT_PUBLIC_YAPP_URL}/api/tickets/validate?ticketId=${ticket.id}&token=${ticket.validationToken}`;
 
   return (
     <Cuer.Root value={url} className="rounded-lg">
@@ -20,7 +19,6 @@ export const QrCode = ({ ticket }: QrCodeProps) => {
           alt="logo"
           width={100}
           height={100}
-          // style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
       </Cuer.Arena>
     </Cuer.Root>

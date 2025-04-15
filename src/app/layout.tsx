@@ -9,6 +9,8 @@ import { ToastProvider } from '@/providers/ToastProvider';
 import { TanStackProvider } from '@/providers/TanStackProvider';
 import { ThemeProvider as NextThemeProvider } from 'next-themes';
 import { UserContextProvider } from '@/providers/UserContextProvider';
+import { getServerAuthSession } from '@/lib/auth';
+import { SessionProvider } from '@/providers/SessionProvider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -25,30 +27,34 @@ export const metadata: Metadata = {
   description: 'Yodl ticketing mini-app',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getServerAuthSession();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <TanStackProvider>
-          <UserContextProvider>
-            <NextThemeProvider attribute="class" defaultTheme="system" enableSystem>
-              <Theme
-                accentColor={ACCENT_COLOR}
-                hasBackground={false}
-                panelBackground="translucent"
-                radius="large"
-              >
-                <ToastProvider>
-                  <AppLayout>{children}</AppLayout>
-                </ToastProvider>
-              </Theme>
-            </NextThemeProvider>
-          </UserContextProvider>
-        </TanStackProvider>
+        <SessionProvider session={session}>
+          <TanStackProvider>
+            <UserContextProvider>
+              <NextThemeProvider attribute="class" defaultTheme="system" enableSystem>
+                <Theme
+                  accentColor={ACCENT_COLOR}
+                  hasBackground={false}
+                  panelBackground="translucent"
+                  radius="large"
+                >
+                  <ToastProvider>
+                    <AppLayout>{children}</AppLayout>
+                  </ToastProvider>
+                </Theme>
+              </NextThemeProvider>
+            </UserContextProvider>
+          </TanStackProvider>
+        </SessionProvider>
       </body>
     </html>
   );
