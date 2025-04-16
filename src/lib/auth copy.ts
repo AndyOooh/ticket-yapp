@@ -48,12 +48,6 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      console.log('🔵 JWT callback:', {
-        hasUser: !!user,
-        user: user ? { id: user.id, address: user.address } : undefined,
-        token,
-      });
-
       // Initial sign in
       if (user) {
         return {
@@ -71,19 +65,11 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      console.log('🔵 Session callback:', {
-        tokenAddress: token.address,
-        sessionBefore: session,
-      });
-
-      const updatedSession = {
+      return {
         ...session,
         address: token.address as string,
         isVerified: token.isVerified as boolean,
       };
-
-      console.log('🔵 Updated session:', updatedSession);
-      return updatedSession;
     },
   },
   session: {
@@ -104,23 +90,8 @@ export const authOptions: NextAuthOptions = {
       },
     },
     callbackUrl: {
-      name:
-        process.env.NODE_ENV === 'production'
-          ? `__Secure-next-auth.callback-url`
-          : `next-auth.callback-url`,
+      name: `next-auth.callback-url`,
       options: {
-        sameSite: 'none',
-        path: '/',
-        secure: true,
-      },
-    },
-    csrfToken: {
-      name:
-        process.env.NODE_ENV === 'production'
-          ? `__Host-next-auth.csrf-token`
-          : `next-auth.csrf-token`,
-      options: {
-        httpOnly: true,
         sameSite: 'none',
         path: '/',
         secure: true,
@@ -129,11 +100,4 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
-export const getServerAuthSession = async () => {
-  const session = await getServerSession(authOptions);
-  console.log('🔵 Server session:', {
-    hasSession: !!session,
-    address: session?.address,
-  });
-  return session;
-};
+export const getServerAuthSession = () => getServerSession(authOptions);
