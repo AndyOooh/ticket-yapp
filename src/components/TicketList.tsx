@@ -1,36 +1,27 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Box, Flex, Text } from '@radix-ui/themes';
+import { Box, Flex, Section, Text } from '@radix-ui/themes';
 import { useInView } from 'react-intersection-observer';
 import { TicketCard } from './TicketCard';
-import { useUserContext } from '@/providers/UserContextProvider';
+import { useSession } from 'next-auth/react';
 import { useUserTickets } from '@/hooks/useUserTickets';
+import { InfoBox } from './ui/InfoBox';
 
-export const TicketList = () => {
-  const { data: userContext, isLoading: isUserLoading } = useUserContext();
-  const ownerAddress = userContext?.address;
-  // const ownerAddress = '0x3BEC0A9CeCAd6315860067325c603861adf740b5';
-
+export const MyTicketList = () => {
+  const { status: sessionStatus } = useSession();
   const [page, setPage] = useState(1);
   const offset = (page - 1) * 10; // Using default limit of 10
 
-  // Use the hook with just the necessary parameters
+  // Use the simplified hook
   const {
     data: tickets = [],
     isLoading: isTicketsLoading,
     isFetching,
     error,
   } = useUserTickets({
-    ownerAddress,
     offset,
   });
-
-  // Mock data
-  // const tickets: any[] = [];
-  // const isFetching = false;
-  // const isTicketsLoading = false;
-  // const error = null;
 
   const { ref, inView } = useInView({
     threshold: 0.1,
@@ -46,47 +37,39 @@ export const TicketList = () => {
     }
   }, [inView, hasMore, isFetching]);
 
-  // User loading state
-  if (isUserLoading) {
+  // Authentication loading state
+  if (sessionStatus === 'loading') {
     return (
-      <Box py="6">
-        <Text size="3" align="center">
-          Loading user information...
-        </Text>
-      </Box>
+      <Section>
+        <InfoBox>Loading user information...</InfoBox>
+      </Section>
     );
   }
 
-  // Not connected state
-  if (!ownerAddress) {
+  // Not authenticated state
+  if (sessionStatus === 'unauthenticated') {
     return (
-      <Box py="6">
-        <Text size="3" align="center">
-          Please connect your wallet to view your tickets.
-        </Text>
-      </Box>
+      <Section>
+        <InfoBox>Please sign in to view your tickets</InfoBox>
+      </Section>
     );
   }
 
   // Tickets loading state
   if (isTicketsLoading) {
     return (
-      <Box py="6">
-        <Text size="3" align="center">
-          Loading your tickets...
-        </Text>
-      </Box>
+      <Section>
+        <InfoBox>Loading your tickets...</InfoBox>
+      </Section>
     );
   }
 
   // Error state
   if (error) {
     return (
-      <Box py="6">
-        <Text size="3" align="center" color="red">
-          Error loading tickets
-        </Text>
-      </Box>
+      <Section>
+        <InfoBox>Error loading tickets</InfoBox>
+      </Section>
     );
   }
 

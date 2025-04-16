@@ -11,6 +11,7 @@ import { ThemeProvider as NextThemeProvider } from 'next-themes';
 import { UserContextProvider } from '@/providers/UserContextProvider';
 import { getServerAuthSession } from '@/lib/auth';
 import { SessionProvider } from '@/providers/SessionProvider';
+import { SessionGuard } from '@/components/SessionGuard';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -40,6 +41,7 @@ export default async function RootLayout({
         <SessionProvider session={session}>
           <TanStackProvider>
             <UserContextProvider>
+              <SessionGuard />
               <NextThemeProvider attribute="class" defaultTheme="system" enableSystem>
                 <Theme
                   accentColor={ACCENT_COLOR}

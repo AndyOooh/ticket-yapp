@@ -2,8 +2,8 @@ import { Flex, IconButton, Link } from '@radix-ui/themes';
 import { MdOutlineQrCode } from 'react-icons/md';
 import NextLink from 'next/link';
 import Image from 'next/image';
-import { UserButton } from './UserButton';
 import { ThemeToggle } from '../ui/ThemeToggle';
+import { RightHeaderButton } from '../RightHeaderButton';
 
 export function Header() {
   return (
@@ -20,7 +20,7 @@ export function Header() {
         <Image src="/yodl-logo.png" alt="logo" width={44} height={44} className="rounded-full" />
       </Link>
       <Flex gap="2" align="center" justify="end" className="flex-1">
-        <UserButton />
+        <RightHeaderButton />
       </Flex>
     </Flex>
   );
