@@ -29,6 +29,7 @@ export const SiweSignInButton = () => {
           domain: process.env.NEXT_PUBLIC_PARENT_DOMAIN!,
           uri: process.env.NEXT_PUBLIC_PARENT_URL!,
         });
+        console.log('🚀 response:', response);
 
         console.log('🟣 SIWE response:', {
           messageLength: response.message?.length,
