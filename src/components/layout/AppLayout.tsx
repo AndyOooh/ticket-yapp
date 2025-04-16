@@ -1,6 +1,6 @@
 import { Container, Flex } from '@radix-ui/themes';
 import { Header } from './Header';
-import { NoTokenCallOut } from './NoUserCallOut';
+import { NoTokenCallOut } from '../NoTokenCallOut';
 
 type AppLayoutProps = {
   children: React.ReactNode;

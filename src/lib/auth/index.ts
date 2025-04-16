@@ -2,6 +2,7 @@ import { getServerSession, type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { SiweMessage } from 'siwe';
 import { verifyWithEOA, verifyWithSCA } from './verify';
+import { verifyNonce } from '@/lib/actions/nonce';
 
 /**
  * NextAuth configuration with SIWE authentication
@@ -29,12 +30,20 @@ export const authOptions: NextAuthOptions = {
           const siweMessage = new SiweMessage(credentials.message);
           const chainId = siweMessage.chainId;
 
+          // Verify the nonce from the cookie
+          const isValidNonce = await verifyNonce(siweMessage.nonce);
+          if (!isValidNonce) {
+            console.error('🔴 Invalid nonce in SIWE message');
+            return null;
+          }
+
           // Two-phase verification strategy:
           // 1. Try EOA verification first (most common case)
           let verificationResult = await verifyWithEOA(siweMessage, credentials.signature);
 
           // 2. If EOA verification fails, try SCA verification
           if (!verificationResult) {
+            console.log('🟡 Falling back to SCA verification');
             verificationResult = await verifyWithSCA(
               siweMessage,
               credentials.signature,
@@ -54,6 +63,7 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
 
+          console.log('🟢 Verification successful, creating user');
           return {
             id: credentials.address,
             address: credentials.address,
