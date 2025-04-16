@@ -1,29 +1,14 @@
 import { getServerSession, type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { SiweMessage } from 'siwe';
-import { createPublicClient, http, type Address, type Hex, type Chain } from 'viem';
-import { base, mainnet, optimism, arbitrum, polygon } from 'viem/chains';
+import { verifyWithEOA, verifyWithSCA } from './verify';
 
-// Map of supported chains for verification
-const supportedChains: Record<number, Chain> = {
-  1: mainnet,
-  8453: base,
-  10: optimism,
-  42161: arbitrum,
-  137: polygon,
-};
-
-// Create a public client for the specific chain
-const getPublicClient = (chainId: number) => {
-  const chain = supportedChains[chainId] || base; // Default to base if chain not found
-  return createPublicClient({
-    chain,
-    transport: http(),
-  });
-};
-
+/**
+ * NextAuth configuration with SIWE authentication
+ * Supports both EOA and SCA wallets
+ */
 export const authOptions: NextAuthOptions = {
-  debug: true, // Enable debug for more verbose logging
+  debug: process.env.NODE_ENV === 'development',
   providers: [
     CredentialsProvider({
       name: 'SIWE',
@@ -34,58 +19,41 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         try {
+          // Validate required fields
           if (!credentials?.message || !credentials?.signature || !credentials?.address) {
+            console.error('🔴 Missing required SIWE credentials');
             return null;
           }
 
+          // Parse the SIWE message
           const siweMessage = new SiweMessage(credentials.message);
           const chainId = siweMessage.chainId;
 
-          console.log(`🔵 Verifying SIWE message for chain ID: ${chainId}`);
+          // Two-phase verification strategy:
+          // 1. Try EOA verification first (most common case)
+          let verificationResult = await verifyWithEOA(siweMessage, credentials.signature);
 
-          // Try standard EOA verification first
-          let verificationResult;
-          try {
-            verificationResult = await siweMessage.verify({
-              signature: credentials.signature,
-              domain: siweMessage.domain,
-            });
-          } catch (error) {
-            console.error('🔴 Standard SIWE verification failed, trying ERC-1271:', error);
-            // Standard verification failed, try ERC-1271 for Smart Contract Accounts
-            try {
-              // Get the appropriate client for this chain
-              const publicClient = getPublicClient(chainId);
-
-              // Use viem's verifyMessage for ERC-1271 verification
-              const isValidSCA = await publicClient.verifyMessage({
-                address: credentials.address as Address,
-                message: siweMessage.prepareMessage(),
-                signature: credentials.signature as Hex,
-              });
-
-              if (!isValidSCA) {
-                console.error('🔴 ERC-1271 verification failed');
-                return null;
-              }
-
-              verificationResult = { success: true, data: { address: credentials.address } };
-              console.log('🟢 ERC-1271 verification successful for SCA wallet');
-            } catch (scaError) {
-              console.error('🔴 ERC-1271 verification error:', scaError);
-              return null;
-            }
+          // 2. If EOA verification fails, try SCA verification
+          if (!verificationResult) {
+            verificationResult = await verifyWithSCA(
+              siweMessage,
+              credentials.signature,
+              credentials.address,
+              chainId
+            );
           }
 
-          // Ensure we have a successful verification and the addresses match
+          // Final verification: ensure success and address matches
           if (
-            !verificationResult.success ||
+            !verificationResult?.success ||
             verificationResult.data.address.toLowerCase() !== credentials.address.toLowerCase()
           ) {
+            console.error(
+              '🔴 SIWE verification failed: address mismatch or unsuccessful verification'
+            );
             return null;
           }
 
-          console.log('🟢 Verification successful, creating user');
           return {
             id: credentials.address,
             address: credentials.address,
@@ -100,13 +68,13 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    /**
+     * JWT callback - called when creating and updating the JSON Web Token
+     *
+     * Initial sign-in: Copy user data from credentials to the token
+     * Subsequent calls: Return the token unchanged
+     */
     async jwt({ token, user }) {
-      console.log('🔵 JWT callback:', {
-        hasUser: !!user,
-        user: user ? { id: user.id, address: user.address } : undefined,
-        token,
-      });
-
       // Initial sign in
       if (user) {
         return {
@@ -119,30 +87,41 @@ export const authOptions: NextAuthOptions = {
           email: null,
         };
       }
-
       // Subsequent calls
       return token;
     },
-    async session({ session, token }) {
-      console.log('🔵 Session callback:', {
-        tokenAddress: token.address,
-        sessionBefore: session,
-      });
 
+    /**
+     * Session callback - called whenever a session is checked
+     *
+     * This function creates the session object that's available
+     * on the client via useSession() and on the server via getServerSession()
+     */
+    async session({ session, token }) {
       const updatedSession = {
         ...session,
         address: token.address as string,
         isVerified: token.isVerified as boolean,
       };
-
-      console.log('🔵 Updated session:', updatedSession);
       return updatedSession;
     },
   },
+
+  /**
+   * Session configuration
+   * Using JWT strategy for stateless sessions
+   */
   session: {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
+
+  /**
+   * Cookie configuration for secure embedding in iframe environments
+   *
+   * These settings are crucial for session persistence and security,
+   * especially when running in embedded contexts like mini-apps
+   */
   cookies: {
     sessionToken: {
       name:
@@ -182,11 +161,11 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
+/**
+ * Helper function to get the server-side session
+ * Used in server components and API routes
+ */
 export const getServerAuthSession = async () => {
   const session = await getServerSession(authOptions);
-  console.log('🔵 Server session:', {
-    hasSession: !!session,
-    address: session?.address,
-  });
   return session;
 };

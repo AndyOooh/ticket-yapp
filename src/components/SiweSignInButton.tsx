@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@radix-ui/themes';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useUserContext } from '@/providers/UserContextProvider';
 import { sdk } from '@/lib/sdk';
 import { signIn, useSession, signOut } from 'next-auth/react';
@@ -11,65 +11,47 @@ export const SiweSignInButton = () => {
   const { data: userContext } = useUserContext();
   const { data: session, status } = useSession();
 
-  // Log session state changes
-  useEffect(() => {
-    console.log('🟢 Session status:', status);
-    console.log('🟢 Session data:', session);
-  }, [session, status]);
-
   async function requestSIWE(): Promise<void> {
-    console.log('🟣 Starting SIWE flow');
-    if (userContext?.address) {
-      try {
-        setIsLoading(true);
-        console.log('🟣 User context:', userContext);
+    if (!userContext?.address) {
+      console.error('🔴 No user address available for SIWE');
+      return;
+    }
 
-        const response = await sdk.signSiweMessage({
-          address: userContext.address,
-          domain: process.env.NEXT_PUBLIC_PARENT_DOMAIN!,
-          uri: process.env.NEXT_PUBLIC_PARENT_URL!,
-        });
-        console.log('🚀 response:', response);
+    try {
+      setIsLoading(true);
 
-        console.log('🟣 SIWE response:', {
-          messageLength: response.message?.length,
-          hasSignature: !!response.signature,
-          address: response.address,
-        });
+      // Request signature from parent app
+      const response = await sdk.signSiweMessage({
+        address: userContext.address,
+        domain: process.env.NEXT_PUBLIC_PARENT_DOMAIN!,
+        uri: process.env.NEXT_PUBLIC_PARENT_URL!,
+      });
 
-        const result = await signIn('credentials', {
-          message: response.message,
-          signature: response.signature,
-          address: response.address,
-          redirect: false,
-        });
-
-        console.log('🟣 Sign in result:', result);
-
-        if (result?.error) {
-          throw new Error(result.error);
-        }
-
-        // Wait a moment and check session again
-        setTimeout(() => {
-          console.log('🟣 Session after auth:', {
-            status,
-            session,
-            hasCookie: document.cookie.includes('next-auth.session-token'),
-          });
-        }, 1000);
-      } catch (error) {
-        console.error('🔴 SIWE error:', error);
-      } finally {
-        setIsLoading(false);
+      if (!response.signature || !response.message) {
+        throw new Error('Missing signature or message from SIWE response');
       }
+
+      // Send credentials to NextAuth
+      const result = await signIn('credentials', {
+        message: response.message,
+        signature: response.signature,
+        address: response.address,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        throw new Error(`Authentication failed: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('🔴 SIWE error:', error);
+      // Could add user-facing error notification here
+    } finally {
+      setIsLoading(false);
     }
   }
 
   const handleSignOut = async () => {
-    console.log('🟣 Signing out');
     await signOut({ redirect: false });
-    console.log('🟣 Signed out, new session status:', status);
   };
 
   return (
