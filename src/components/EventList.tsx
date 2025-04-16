@@ -64,6 +64,7 @@ export const EventList = ({ initialEvents }: EventListProps) => {
   return (
     <Flex direction="column" gap="4">
       {events.map((event) => (
+        // TODO: Show different event card for events created by the user. Should be editable and not have buy ticket button.
         <EventCard key={event.id} event={event} />
       ))}
 

@@ -1,11 +1,10 @@
 export const dynamic = 'force-dynamic';
 
-import { Heading, Container, Text, Flex, IconButton, Button } from '@radix-ui/themes';
+import { Heading, Container, Text, Flex, Button } from '@radix-ui/themes';
 import { getEvents } from '@/lib/services/event';
 import { EventList } from '@/components/EventList';
 import { BOARD_SUB_TITLE, BOARD_TITLE } from '@/constants';
 import NextLink from 'next/link';
-import { SiweSignInButton } from '@/components/SiweSignInButton';
 
 export default async function Home() {
   const initialEvents = await getEvents({ limit: 10 });
@@ -13,7 +12,6 @@ export default async function Home() {
   return (
     <main>
       <Container size="3" mt="4">
-        <SiweSignInButton />
         <Flex justify="between" align="center">
           <Heading size="6">{BOARD_TITLE}</Heading>
           <NextLink href="/events/create" passHref>

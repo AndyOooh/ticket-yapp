@@ -1,11 +1,22 @@
 'use client';
 
-import { Code, DropdownMenu, Flex, IconButton, Link, Skeleton, Text } from '@radix-ui/themes';
+import {
+  Button,
+  Code,
+  DropdownMenu,
+  Flex,
+  IconButton,
+  Link,
+  Skeleton,
+  Text,
+} from '@radix-ui/themes';
 import Image from 'next/image';
 import { MdOutlinePersonOff, MdOutlinePersonOutline } from 'react-icons/md';
 import { FaTwitter, FaGithub } from 'react-icons/fa';
 import { useUserContext } from '@/providers/UserContextProvider';
 import { truncateAddress } from '@/lib/utils';
+import { signOut, useSession } from 'next-auth/react';
+import { SiweSignInButton } from '../SiweSignInButton';
 
 const socials = [
   {
@@ -22,9 +33,14 @@ const socials = [
 
 export const UserButton = () => {
   const { data: userContext, isLoading } = useUserContext();
-  console.log('🚀 userContext:', userContext);
-
+  const { data: session } = useSession();
+  console.log('🚀🟣 session:', session);
   const ensAvatar = null;
+
+  if (!session || !session?.isVerified) {
+    return <SiweSignInButton />;
+  }
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
@@ -49,13 +65,6 @@ export const UserButton = () => {
       <DropdownMenu.Content>
         {userContext ? (
           <>
-            <DropdownMenu.Label>Pages</DropdownMenu.Label>
-            <DropdownMenu.Item>
-              <Link href="/events">My Events</Link>
-            </DropdownMenu.Item>
-            <DropdownMenu.Item>
-              <Link href="/tickets">My Tickets</Link>
-            </DropdownMenu.Item>
             <DropdownMenu.Label>User</DropdownMenu.Label>
             <DropdownMenu.Item>
               Address:
@@ -68,6 +77,18 @@ export const UserButton = () => {
                 <Code>{userContext.primaryEnsName}</Code>
               </DropdownMenu.Item>
             )}
+            <DropdownMenu.Item>
+              <Button size="1" variant="solid" onClick={() => signOut()}>
+                Sign Out
+              </Button>
+            </DropdownMenu.Item>
+            <DropdownMenu.Label>Pages</DropdownMenu.Label>
+            <DropdownMenu.Item>
+              <Link href="/events">My Events</Link>
+            </DropdownMenu.Item>
+            <DropdownMenu.Item>
+              <Link href="/tickets">My Tickets</Link>
+            </DropdownMenu.Item>
 
             {userContext.community && (
               <>

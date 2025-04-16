@@ -13,19 +13,18 @@ import {
   Badge,
   Select,
   Callout,
+  Section,
 } from '@radix-ui/themes';
 import { useToast } from '@/providers/ToastProvider';
 import { TAGS } from '@/constants';
 import { useUserContext } from '@/providers/UserContextProvider';
 import { useMutation } from '@tanstack/react-query';
-import {
-  CalendarIcon,
-  TimerIcon,
-  // LocationIcon,
-  HomeIcon,
-} from '@radix-ui/react-icons';
+import { CalendarIcon, TimerIcon, HomeIcon } from '@radix-ui/react-icons';
+import { useSession } from 'next-auth/react';
+import { InfoBox } from '@/components/ui/InfoBox';
 
 export default function CreateEventPage() {
+  const { status: sessionStatus } = useSession();
   const router = useRouter();
   const toast = useToast();
   const { data: userContext } = useUserContext();
@@ -122,180 +121,194 @@ export default function CreateEventPage() {
     );
   };
 
+  // if (sessionStatus !== 'authenticated') {
+  //   return (
+  //     <Section>
+  //       <InfoBox>You must be signed in to create events</InfoBox>
+  //     </Section>
+  //   );
+  // }
+
   return (
     <Box className="max-w-2xl mx-auto p-4">
       <Heading size="6" mb="4">
         Create an Event
       </Heading>
 
-      <form onSubmit={handleSubmit}>
-        <Flex direction="column" gap="4">
-          {/* Title */}
-          <Box>
-            <Text as="label" size="2" mb="1" weight="bold">
-              Event Title*
-            </Text>
-            <TextField.Root
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              placeholder="Event Title"
-              size="3"
-              maxLength={100}
-              required
-            />
-            <Text size="1" color="gray">
-              {formData.title.length}/100
-            </Text>
-          </Box>
-
-          {/* Description */}
-          <Box>
-            <Text as="label" size="2" mb="1" weight="bold">
-              Description*
-            </Text>
-            <TextArea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              placeholder="Event description and details"
-              size="3"
-              required
-            />
-          </Box>
-
-          {/* Date and Time */}
-          <Box>
-            <Text as="label" size="2" mb="1" weight="bold">
-              <Flex align="center" gap="1">
-                <CalendarIcon />
-                Date and Time*
-              </Flex>
-            </Text>
-            <TextField.Root
-              type="datetime-local"
-              name="eventTime"
-              value={formData.eventTime}
-              onChange={handleChange}
-              size="3"
-              required
-            />
-          </Box>
-
-          {/* Location */}
-          <Box>
-            <Text as="label" size="2" mb="1" weight="bold">
-              <Flex align="center" gap="1">
-                <TimerIcon />
-                Location
-              </Flex>
-            </Text>
-            <TextField.Root
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              placeholder="Physical or virtual location"
-              size="3"
-            />
-          </Box>
-
-          {/* Capacity */}
-          <Box>
-            <Text as="label" size="2" mb="1" weight="bold">
-              <Flex align="center" gap="1">
-                <HomeIcon />
-                Capacity
-              </Flex>
-            </Text>
-            <TextField.Root
-              type="number"
-              name="capacity"
-              value={formData.capacity}
-              onChange={handleChange}
-              placeholder="Maximum number of tickets (optional)"
-              size="3"
-            />
-          </Box>
-
-          {/* Price */}
-          <Flex gap="3">
-            <Box style={{ flex: 2 }}>
+      {sessionStatus !== 'authenticated' ? (
+        <Section>
+          <InfoBox>Please sign in to create events</InfoBox>
+        </Section>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <Flex direction="column" gap="4">
+            {/* Title */}
+            <Box>
               <Text as="label" size="2" mb="1" weight="bold">
-                Price Amount*
+                Event Title*
               </Text>
               <TextField.Root
-                type="number"
-                name="priceAmount"
-                value={formData.priceAmount}
+                name="title"
+                value={formData.title}
                 onChange={handleChange}
-                placeholder="0.00"
+                placeholder="Event Title"
+                size="3"
+                maxLength={100}
+                required
+              />
+              <Text size="1" color="gray">
+                {formData.title.length}/100
+              </Text>
+            </Box>
+
+            {/* Description */}
+            <Box>
+              <Text as="label" size="2" mb="1" weight="bold">
+                Description*
+              </Text>
+              <TextArea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="Event description and details"
                 size="3"
                 required
               />
             </Box>
-            <Box style={{ flex: 1 }}>
-              <Text as="label" size="2" mb="1" weight="bold">
-                Currency*
-              </Text>
-              <Select.Root
-                name="priceCurrency"
-                value={formData.priceCurrency}
-                onValueChange={(value) =>
-                  setFormData((prev) => ({ ...prev, priceCurrency: value }))
-                }
-              >
-                <Select.Trigger />
-                <Select.Content>
-                  {currencies.map((currency) => (
-                    <Select.Item key={currency} value={currency}>
-                      {currency}
-                    </Select.Item>
-                  ))}
-                </Select.Content>
-              </Select.Root>
-            </Box>
-          </Flex>
 
-          {/* Tags */}
-          <Box>
-            <Text as="label" size="2" mb="1" weight="bold">
-              Tags
-            </Text>
-            <Flex wrap="wrap" gap="2" mb="2">
-              {TAGS.map((tag) => (
-                <Badge
-                  key={tag.name}
-                  color={tag.color}
-                  size="2"
-                  onClick={() => handleTagChange(tag.name)}
-                  className={
-                    formData.tags.includes(tag.name)
-                      ? 'border'
-                      : 'border border-transparent opacity-60'
+            {/* Date and Time */}
+            <Box>
+              <Text as="label" size="2" mb="1" weight="bold">
+                <Flex align="center" gap="1">
+                  <CalendarIcon />
+                  Date and Time*
+                </Flex>
+              </Text>
+              <TextField.Root
+                type="datetime-local"
+                name="eventTime"
+                value={formData.eventTime}
+                onChange={handleChange}
+                size="3"
+                required
+              />
+            </Box>
+
+            {/* Location */}
+            <Box>
+              <Text as="label" size="2" mb="1" weight="bold">
+                <Flex align="center" gap="1">
+                  <TimerIcon />
+                  Location
+                </Flex>
+              </Text>
+              <TextField.Root
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+                placeholder="Physical or virtual location"
+                size="3"
+              />
+            </Box>
+
+            {/* Capacity */}
+            <Box>
+              <Text as="label" size="2" mb="1" weight="bold">
+                <Flex align="center" gap="1">
+                  <HomeIcon />
+                  Capacity
+                </Flex>
+              </Text>
+              <TextField.Root
+                type="number"
+                name="capacity"
+                value={formData.capacity}
+                onChange={handleChange}
+                placeholder="Maximum number of tickets (optional)"
+                size="3"
+              />
+            </Box>
+
+            {/* Price */}
+            <Flex gap="3">
+              <Box style={{ flex: 2 }}>
+                <Text as="label" size="2" mb="1" weight="bold">
+                  Price Amount*
+                </Text>
+                <TextField.Root
+                  type="number"
+                  name="priceAmount"
+                  value={formData.priceAmount}
+                  onChange={handleChange}
+                  placeholder="0.00"
+                  size="3"
+                  required
+                />
+              </Box>
+              <Box style={{ flex: 1 }}>
+                <Text as="label" size="2" mb="1" weight="bold">
+                  Currency*
+                </Text>
+                <Select.Root
+                  name="priceCurrency"
+                  value={formData.priceCurrency}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, priceCurrency: value }))
                   }
                 >
-                  {tag.name}
-                </Badge>
-              ))}
+                  <Select.Trigger />
+                  <Select.Content>
+                    {currencies.map((currency) => (
+                      <Select.Item key={currency} value={currency}>
+                        {currency}
+                      </Select.Item>
+                    ))}
+                  </Select.Content>
+                </Select.Root>
+              </Box>
             </Flex>
-          </Box>
 
-          {/* Submission */}
-          <Flex gap="3" justify="end" mt="4">
-            <Button
-              type="button"
-              variant="soft"
-              onClick={() => router.push('/events')}
-              disabled={createEventMutation.isPending}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={!isFormValid() || createEventMutation.isPending}>
-              {createEventMutation.isPending ? 'Creating...' : 'Create Event'}
-            </Button>
+            {/* Tags */}
+            <Box>
+              <Text as="label" size="2" mb="1" weight="bold">
+                Tags
+              </Text>
+              <Flex wrap="wrap" gap="2" mb="2">
+                {TAGS.map((tag) => (
+                  <Badge
+                    key={tag.name}
+                    color={tag.color}
+                    size="2"
+                    onClick={() => handleTagChange(tag.name)}
+                    className={
+                      formData.tags.includes(tag.name)
+                        ? 'border'
+                        : 'border border-transparent opacity-60'
+                    }
+                  >
+                    {tag.name}
+                  </Badge>
+                ))}
+              </Flex>
+            </Box>
+
+            {/* Submission */}
+            <Flex gap="3" justify="end" mt="4">
+              <Button
+                type="button"
+                variant="soft"
+                onClick={() => router.push('/events')}
+                disabled={createEventMutation.isPending}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={!isFormValid() || createEventMutation.isPending}>
+                {createEventMutation.isPending ? 'Creating...' : 'Create Event'}
+              </Button>
+            </Flex>
           </Flex>
-        </Flex>
-      </form>
+        </form>
+      )}
 
       {/* Error display */}
       {createEventMutation.isError && (
