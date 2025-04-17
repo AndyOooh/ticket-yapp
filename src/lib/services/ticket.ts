@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { prisma } from '@/lib/db';
 import { TicketWithEvent } from '@/types';
 import type { Prisma } from '@prisma/client';

@@ -1,3 +1,5 @@
+'use server';
+
 import { SiweMessage } from 'siwe';
 import { type Address, type Hex } from 'viem';
 import { getPublicClient } from '../viem';

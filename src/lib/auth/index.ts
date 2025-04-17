@@ -43,7 +43,6 @@ export const authOptions: NextAuthOptions = {
 
           // 2. If EOA verification fails, try SCA verification
           if (!verificationResult) {
-            console.log('🟡 Falling back to SCA verification');
             verificationResult = await verifyWithSCA(
               siweMessage,
               credentials.signature,
@@ -63,7 +62,6 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
 
-          console.log('🟢 Verification successful, creating user');
           return {
             id: credentials.address,
             address: credentials.address,

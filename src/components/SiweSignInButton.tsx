@@ -25,12 +25,9 @@ export const SiweSignInButton = () => {
       setIsLoading(true);
 
       // 1. Generate a nonce from the server
-      console.log('🟢 Requesting nonce from server...');
       const nonce = await generateNonce();
-      console.log('🟢 Received nonce for SIWE:', nonce);
 
       // 2. Request signature from parent app with the nonce
-      console.log('🟢 Requesting signature from wallet...');
       const response = await sdk.signSiweMessage({
         address: userContext.address,
         domain: process.env.NEXT_PUBLIC_PARENT_DOMAIN!,
@@ -41,9 +38,6 @@ export const SiweSignInButton = () => {
       if (!response.signature || !response.message) {
         throw new Error('Missing signature or message from SIWE response');
       }
-
-      console.log('🟢 Signature received, sending to NextAuth...');
-      console.log('Message:', response.message);
 
       // 3. Send credentials to NextAuth
       const result = await signIn('credentials', {
@@ -56,8 +50,6 @@ export const SiweSignInButton = () => {
       if (result?.error) {
         throw new Error(`Authentication failed: ${result.error}`);
       }
-
-      console.log('🟢 Authentication successful!');
     } catch (error) {
       console.error('🔴 SIWE error:', error);
       setError((error as Error).message || 'Authentication failed');

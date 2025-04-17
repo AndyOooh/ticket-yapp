@@ -11,7 +11,7 @@ import { ThemeProvider as NextThemeProvider } from 'next-themes';
 import { UserContextProvider } from '@/providers/UserContextProvider';
 import { getServerAuthSession } from '@/lib/auth';
 import { SessionProvider } from '@/providers/SessionProvider';
-import { SessionGuard } from '@/components/SessionGuard';
+import { SessionGuard } from '@/providers/SessionGuard';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

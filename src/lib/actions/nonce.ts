@@ -13,7 +13,6 @@ import { generateSiweNonce } from 'viem/siwe';
  */
 export async function generateNonce(): Promise<string> {
   const nonce = generateSiweNonce();
-  console.log('🟢 Generated nonce:', nonce);
 
   // Store nonce in cookie with settings that work in development
   const cookieStore = await cookies();
@@ -36,18 +35,9 @@ export async function generateNonce(): Promise<string> {
  */
 export async function verifyNonce(messageNonce: string): Promise<boolean> {
   try {
-    console.log('🚀 Verifying nonce:', messageNonce);
     const cookieStore = await cookies();
 
-    // Debug all cookies to see what's available
-    const allCookies = cookieStore.getAll();
-    console.log(
-      '🚀 All cookies:',
-      allCookies.map((c) => c.name)
-    );
-
     const storedNonce = cookieStore.get('siwe-nonce')?.value;
-    console.log('🚀 Stored nonce:', storedNonce);
 
     // No nonce stored or doesn't match
     if (!storedNonce || storedNonce !== messageNonce) {
@@ -55,9 +45,15 @@ export async function verifyNonce(messageNonce: string): Promise<boolean> {
       return false;
     }
 
-    // Clear the nonce cookie
-    cookieStore.delete('siwe-nonce');
-    console.log('🟢 Nonce verified successfully');
+    // Clear the nonce cookie - use the same options as when setting it
+    cookieStore.set('siwe-nonce', '', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      path: '/',
+      maxAge: 0, // This immediately expires the cookie
+    });
+
     return true;
   } catch (error) {
     console.error('🔴 Error verifying nonce:', error);
