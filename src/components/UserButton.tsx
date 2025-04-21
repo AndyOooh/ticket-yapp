@@ -16,7 +16,6 @@ import { FaTwitter, FaGithub } from 'react-icons/fa';
 import { useUserContext } from '@/providers/UserContextProvider';
 import { truncateAddress } from '@/lib/utils';
 import { signOut, useSession } from 'next-auth/react';
-import { SiweSignInButton } from '../SiweSignInButton';
 
 const socials = [
   {
@@ -33,13 +32,7 @@ const socials = [
 
 export const UserButton = () => {
   const { data: userContext, isLoading } = useUserContext();
-  const { data: session } = useSession();
-  console.log('🚀🟣 session:', session);
   const ensAvatar = null;
-
-  if (!session || !session?.isVerified) {
-    return <SiweSignInButton />;
-  }
 
   return (
     <DropdownMenu.Root>

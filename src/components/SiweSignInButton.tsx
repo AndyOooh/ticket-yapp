@@ -14,6 +14,7 @@ export const SiweSignInButton = () => {
   const { data: session, status } = useSession();
 
   async function requestSIWE(): Promise<void> {
+    console.log('🚀🟣 requestSIWE');
     if (!userContext?.address) {
       setError('No wallet address available');
       console.error('🔴 No user address available for SIWE');

@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { SiweSignInButton } from './SiweSignInButton';
-import { UserButton } from './layout/UserButton';
+import { UserButton } from './UserButton';
 
 export const RightHeaderButton = () => {
   const { data: session } = useSession();
