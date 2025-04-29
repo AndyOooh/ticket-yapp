@@ -41,16 +41,15 @@ export const SiweSignInButton = () => {
     }
 
     try {
-      // Check origin and secure context
+      // Check basic security requirements
       console.log('🔹 Security checks:', {
         origin: window.location.origin,
         isSecureContext: window.isSecureContext,
         protocol: window.location.protocol,
         hostname: window.location.hostname,
-        topOrigin: window.top?.location.origin,
-        isTopFrame: window === window.top,
       });
 
+      // Check if we already have access
       console.log('🔹 Checking current storage access...');
       const hasAccess = await document.hasStorageAccess();
       console.log('🔹 Current storage access:', hasAccess);
@@ -60,27 +59,20 @@ export const SiweSignInButton = () => {
         return true;
       }
 
+      // Request access
       console.log('🔹 Requesting storage access...');
-      // Return the promise directly instead of awaiting it
-      return document
-        .requestStorageAccess()
-        .then(() => {
-          console.log('🟢 Storage access granted');
-          return true;
-        })
-        .catch((error) => {
-          console.error('🔴 Storage access request failed:', error);
-          if (error instanceof Error) {
-            console.error('🔴 Error details:', {
-              name: error.name,
-              message: error.message,
-              stack: error.stack,
-            });
-          }
-          return false;
-        });
+      await document.requestStorageAccess();
+      console.log('🟢 Storage access granted');
+      return true;
     } catch (error) {
-      console.error('🔴 Storage access check failed:', error);
+      console.error('🔴 Storage access request failed:', error);
+      if (error instanceof Error) {
+        console.error('🔴 Error details:', {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+        });
+      }
       return false;
     }
   }
