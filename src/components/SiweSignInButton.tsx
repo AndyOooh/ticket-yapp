@@ -35,11 +35,20 @@ export const SiweSignInButton = () => {
   }, [userContext, session]);
 
   async function requestStorageAccess(): Promise<boolean> {
-    if (!isSafari || !hasStorageAccessAPI) return true;
+    if (!isSafari || !hasStorageAccessAPI) {
+      console.log('🟡 Storage access not needed - not Safari or API not available');
+      return true;
+    }
 
     try {
+      console.log('🔹 Checking current storage access...');
       const hasAccess = await document.hasStorageAccess();
-      if (hasAccess) return true;
+      console.log('🔹 Current storage access:', hasAccess);
+
+      if (hasAccess) {
+        console.log('🟢 Already have storage access');
+        return true;
+      }
 
       console.log('🔹 Requesting storage access...');
       await document.requestStorageAccess();
@@ -47,6 +56,13 @@ export const SiweSignInButton = () => {
       return true;
     } catch (error) {
       console.error('🔴 Storage access request failed:', error);
+      if (error instanceof Error) {
+        console.error('🔴 Error details:', {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+        });
+      }
       return false;
     }
   }
@@ -66,7 +82,9 @@ export const SiweSignInButton = () => {
       // Request storage access before proceeding
       const hasAccess = await requestStorageAccess();
       if (!hasAccess) {
-        throw new Error('Storage access is required for authentication');
+        throw new Error(
+          'Storage access is required for authentication. Please ensure you have interacted with this site in a first-party context before.'
+        );
       }
 
       // 1. Generate a nonce from the server
