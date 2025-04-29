@@ -8,6 +8,9 @@ import { signIn, useSession, signOut } from 'next-auth/react';
 import { generateNonce } from '@/lib/actions/nonce';
 import { debugCookieEnvironment } from '@/lib/utils';
 
+const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+const hasStorageAccessAPI = 'hasStorageAccess' in document && 'requestStorageAccess' in document;
+
 export const SiweSignInButton = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -31,6 +34,23 @@ export const SiweSignInButton = () => {
     }
   }, [userContext, session]);
 
+  async function requestStorageAccess(): Promise<boolean> {
+    if (!isSafari || !hasStorageAccessAPI) return true;
+
+    try {
+      const hasAccess = await document.hasStorageAccess();
+      if (hasAccess) return true;
+
+      console.log('🔹 Requesting storage access...');
+      await document.requestStorageAccess();
+      console.log('🟢 Storage access granted');
+      return true;
+    } catch (error) {
+      console.error('🔴 Storage access request failed:', error);
+      return false;
+    }
+  }
+
   async function requestSIWE(): Promise<void> {
     console.log('🚀🟣 requestSIWE');
     if (!userContext?.address) {
@@ -42,6 +62,12 @@ export const SiweSignInButton = () => {
     try {
       setError(null);
       setIsLoading(true);
+
+      // Request storage access before proceeding
+      const hasAccess = await requestStorageAccess();
+      if (!hasAccess) {
+        throw new Error('Storage access is required for authentication');
+      }
 
       // 1. Generate a nonce from the server
       console.log('🔹 Generating nonce from server...');
