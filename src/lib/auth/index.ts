@@ -85,6 +85,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       // Initial sign in
       if (user) {
+        console.log('🟢 Creating new JWT token for user:', user.address);
         return {
           ...token,
           id: user.id,
@@ -106,6 +107,7 @@ export const authOptions: NextAuthOptions = {
      * on the client via useSession() and on the server via getServerSession()
      */
     async session({ session, token }) {
+      console.log('🟢 Creating session for token:', token.address);
       const updatedSession = {
         ...session,
         address: token.address as string,
@@ -132,39 +134,44 @@ export const authOptions: NextAuthOptions = {
    */
   cookies: {
     sessionToken: {
-      name:
-        process.env.NODE_ENV === 'production'
-          ? `__Secure-next-auth.session-token`
-          : `next-auth.session-token`,
+      name: `next-auth.session-token`,
       options: {
         httpOnly: true,
         sameSite: 'none',
         path: '/',
         secure: true,
+        domain: process.env.COOKIE_DOMAIN || undefined,
       },
     },
     callbackUrl: {
-      name:
-        process.env.NODE_ENV === 'production'
-          ? `__Secure-next-auth.callback-url`
-          : `next-auth.callback-url`,
+      name: `next-auth.callback-url`,
       options: {
         sameSite: 'none',
         path: '/',
         secure: true,
+        domain: process.env.COOKIE_DOMAIN || undefined,
       },
     },
     csrfToken: {
-      name:
-        process.env.NODE_ENV === 'production'
-          ? `__Host-next-auth.csrf-token`
-          : `next-auth.csrf-token`,
+      name: `next-auth.csrf-token`,
       options: {
         httpOnly: true,
         sameSite: 'none',
         path: '/',
         secure: true,
+        domain: process.env.COOKIE_DOMAIN || undefined,
       },
+    },
+  },
+  events: {
+    async signIn({ user }) {
+      console.log('🟢 User signed in:', user.address);
+    },
+    async signOut({ token }) {
+      console.log('🟢 User signed out:', token?.address);
+    },
+    async session({ session }) {
+      console.log('🟢 Session updated:', session.address);
     },
   },
 };
