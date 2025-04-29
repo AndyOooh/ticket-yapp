@@ -51,18 +51,26 @@ export const SiweSignInButton = () => {
       }
 
       console.log('🔹 Requesting storage access...');
-      await document.requestStorageAccess();
-      console.log('🟢 Storage access granted');
-      return true;
-    } catch (error) {
-      console.error('🔴 Storage access request failed:', error);
-      if (error instanceof Error) {
-        console.error('🔴 Error details:', {
-          name: error.name,
-          message: error.message,
-          stack: error.stack,
+      // Return the promise directly instead of awaiting it
+      return document
+        .requestStorageAccess()
+        .then(() => {
+          console.log('🟢 Storage access granted');
+          return true;
+        })
+        .catch((error) => {
+          console.error('🔴 Storage access request failed:', error);
+          if (error instanceof Error) {
+            console.error('🔴 Error details:', {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+            });
+          }
+          return false;
         });
-      }
+    } catch (error) {
+      console.error('🔴 Storage access check failed:', error);
       return false;
     }
   }
