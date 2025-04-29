@@ -14,7 +14,7 @@ import { generateSiweNonce } from 'viem/siwe';
 export async function generateNonce(): Promise<string> {
   const nonce = generateSiweNonce();
 
-  // Store nonce in cookie with settings that work in development
+  // Store nonce in cookie with settings that work in both desktop and mobile
   const cookieStore = await cookies();
   cookieStore.set('siwe-nonce', nonce, {
     httpOnly: true,

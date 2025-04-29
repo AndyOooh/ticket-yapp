@@ -12,6 +12,7 @@ import { UserContextProvider } from '@/providers/UserContextProvider';
 import { getServerAuthSession } from '@/lib/auth';
 import { SessionProvider } from '@/providers/SessionProvider';
 import { SessionGuard } from '@/providers/SessionGuard';
+import { DebugConsole } from '@/components/DebugConsole';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -57,6 +58,7 @@ export default async function RootLayout({
             </UserContextProvider>
           </TanStackProvider>
         </SessionProvider>
+        <DebugConsole />
       </body>
     </html>
   );

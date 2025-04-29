@@ -25,6 +25,16 @@ export function SessionGuard() {
     const hasSession = sessionStatus === 'authenticated' && !!session?.address;
     const hasUserContext = !!userContext?.address;
 
+    // Log environment details to help with troubleshooting
+    console.log('🏙️ Environment:', {
+      isStandalone,
+      hasSession,
+      hasUserContext,
+      sessionStatus,
+      isMobile: /iPhone|iPad|iPod|Android/i.test(navigator.userAgent),
+      isSecure: window.location.protocol === 'https:',
+    });
+
     // Scenario 1: User is in standalone mode and has a session
     if (isStandalone && hasSession) {
       if (process.env.NODE_ENV === 'development') {
