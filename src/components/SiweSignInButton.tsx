@@ -41,6 +41,16 @@ export const SiweSignInButton = () => {
     }
 
     try {
+      // Check origin and secure context
+      console.log('🔹 Security checks:', {
+        origin: window.location.origin,
+        isSecureContext: window.isSecureContext,
+        protocol: window.location.protocol,
+        hostname: window.location.hostname,
+        topOrigin: window.top?.location.origin,
+        isTopFrame: window === window.top,
+      });
+
       console.log('🔹 Checking current storage access...');
       const hasAccess = await document.hasStorageAccess();
       console.log('🔹 Current storage access:', hasAccess);
