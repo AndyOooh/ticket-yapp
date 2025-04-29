@@ -1,17 +1,35 @@
 'use client';
 
 import { Button } from '@radix-ui/themes';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useUserContext } from '@/providers/UserContextProvider';
 import { sdk } from '@/lib/sdk';
 import { signIn, useSession, signOut } from 'next-auth/react';
 import { generateNonce } from '@/lib/actions/nonce';
+import { debugCookieEnvironment } from '@/lib/utils';
 
 export const SiweSignInButton = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const { data: userContext } = useUserContext();
   const { data: session, status } = useSession();
+
+  // Check cookie environment on mount to help with debugging
+  useEffect(() => {
+    if (userContext?.address && !session?.address) {
+      const cookieEnv = debugCookieEnvironment();
+      console.log('🍪 Cookie environment check:', cookieEnv);
+
+      // Alert about potential issues
+      if (cookieEnv.thirdPartyCookiesBlocked) {
+        console.warn('⚠️ Third-party cookies may be blocked in this browser');
+      }
+
+      if (!cookieEnv.isSecureContext) {
+        console.warn('⚠️ Not in a secure context. Authentication requires HTTPS');
+      }
+    }
+  }, [userContext, session]);
 
   async function requestSIWE(): Promise<void> {
     console.log('🚀🟣 requestSIWE');
@@ -26,9 +44,12 @@ export const SiweSignInButton = () => {
       setIsLoading(true);
 
       // 1. Generate a nonce from the server
+      console.log('🔹 Generating nonce from server...');
       const nonce = await generateNonce();
+      console.log('🔹 Received nonce:', nonce);
 
       // 2. Request signature from parent app with the nonce
+      console.log('🔹 Requesting SIWE signature from parent app...');
       const response = await sdk.signSiweMessage({
         address: userContext.address,
         domain: process.env.NEXT_PUBLIC_PARENT_DOMAIN!,
@@ -36,11 +57,18 @@ export const SiweSignInButton = () => {
         nonce, // Include the server-generated nonce
       });
 
+      console.log('🔹 Received SIWE response:', {
+        address: response.address,
+        hasSignature: !!response.signature,
+        hasMessage: !!response.message,
+      });
+
       if (!response.signature || !response.message) {
         throw new Error('Missing signature or message from SIWE response');
       }
 
       // 3. Send credentials to NextAuth
+      console.log('🔹 Sending credentials to NextAuth...');
       const result = await signIn('credentials', {
         message: response.message,
         signature: response.signature,
@@ -48,9 +76,19 @@ export const SiweSignInButton = () => {
         redirect: false,
       });
 
+      console.log('🔹 NextAuth sign-in result:', result);
+
       if (result?.error) {
+        console.error('🔴 NextAuth error:', result.error);
         throw new Error(`Authentication failed: ${result.error}`);
       }
+
+      if (!result?.ok) {
+        console.error('🔴 NextAuth response not OK:', result);
+        throw new Error('Authentication failed: server returned an error');
+      }
+
+      console.log('🟢 SIWE authentication successful!');
     } catch (error) {
       console.error('🔴 SIWE error:', error);
       setError((error as Error).message || 'Authentication failed');
