@@ -191,6 +191,8 @@ if (process.env.NODE_ENV === 'production' && authOptions.cookies) {
   };
 }
 
+console.log('🚀✅ authOptions:', authOptions);
+
 /**
  * Helper function to get the server-side session
  * Used in server components and API routes
