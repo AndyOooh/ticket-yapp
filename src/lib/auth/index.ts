@@ -146,22 +146,22 @@ export const authOptions: NextAuthOptions = {
     //   },
     // },
     callbackUrl: {
-      name: `next-auth.callback-url`,
+      name: `__Secure-next-auth.callback-url`,
       options: {
         sameSite: 'none',
         path: '/',
         secure: true,
-        domain: process.env.COOKIE_DOMAIN || undefined,
+        // domain: process.env.COOKIE_DOMAIN || undefined,
       },
     },
     csrfToken: {
-      name: `next-auth.csrf-token`,
+      name: `__Secure-next-auth.csrf-token`,
       options: {
         httpOnly: true,
         sameSite: 'none',
         path: '/',
         secure: true,
-        domain: process.env.COOKIE_DOMAIN || undefined,
+        // domain: process.env.COOKIE_DOMAIN || undefined,
       },
     },
   },
