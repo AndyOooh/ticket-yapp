@@ -132,17 +132,19 @@ export const authOptions: NextAuthOptions = {
    * These settings are crucial for session persistence and security,
    * especially when running in embedded contexts like mini-apps
    */
+  // Apply production-specific cookie settings
+
   cookies: {
-    sessionToken: {
-      name: `next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'none',
-        path: '/',
-        secure: true,
-        domain: process.env.COOKIE_DOMAIN || undefined,
-      },
-    },
+    // sessionToken: {
+    //   name: `next-auth.session-token`,
+    //   options: {
+    //     httpOnly: true,
+    //     sameSite: 'none',
+    //     path: '/',
+    //     secure: true,
+    //     domain: process.env.COOKIE_DOMAIN || undefined,
+    //   },
+    // },
     callbackUrl: {
       name: `next-auth.callback-url`,
       options: {
@@ -175,6 +177,19 @@ export const authOptions: NextAuthOptions = {
     },
   },
 };
+
+if (process.env.NODE_ENV === 'production' && authOptions.cookies) {
+  // This allows the session to be used in the iframe
+  authOptions.cookies.sessionToken = {
+    name: `__Secure-next-auth.session-token`,
+    options: {
+      httpOnly: true,
+      sameSite: 'none',
+      path: '/',
+      secure: true,
+    },
+  };
+}
 
 /**
  * Helper function to get the server-side session
