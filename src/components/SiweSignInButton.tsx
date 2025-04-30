@@ -90,12 +90,12 @@ export const SiweSignInButton = () => {
       setIsLoading(true);
 
       // Request storage access before proceeding
-      const hasAccess = await requestStorageAccess();
-      if (!hasAccess) {
-        throw new Error(
-          'Storage access is required for authentication. Please ensure you have interacted with this site in a first-party context before.'
-        );
-      }
+      // const hasAccess = await requestStorageAccess();
+      // if (!hasAccess) {
+      //   throw new Error(
+      //     'Storage access is required for authentication. Please ensure you have interacted with this site in a first-party context before.'
+      //   );
+      // }
 
       // 1. Generate a nonce from the server
       console.log('🔹 Generating nonce from server...');
