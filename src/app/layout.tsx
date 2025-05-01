@@ -53,6 +53,7 @@ export default async function RootLayout({
                   radius="large"
                 >
                   <ToastProvider>
+                    <CookieInitializer />
                     <AppLayout>{children}</AppLayout>
                   </ToastProvider>
                 </Theme>
@@ -62,7 +63,6 @@ export default async function RootLayout({
         </SessionProvider>
         <DebugConsole />
         <StorageAccessTest />
-        <CookieInitializer />
       </body>
     </html>
   );

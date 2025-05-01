@@ -8,15 +8,14 @@ import { signIn, useSession, signOut } from 'next-auth/react';
 import { generateNonce } from '@/lib/actions/nonce';
 import { debugCookieEnvironment } from '@/lib/utils';
 
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-const hasStorageAccessAPI = 'hasStorageAccess' in document && 'requestStorageAccess' in document;
-
 export const SiweSignInButton = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const { data: userContext } = useUserContext();
   const { data: session, status } = useSession();
 
+  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  const hasStorageAccessAPI = 'hasStorageAccess' in document && 'requestStorageAccess' in document;
   // Check cookie environment on mount to help with debugging
   useEffect(() => {
     if (userContext?.address && !session?.address) {

@@ -3,6 +3,7 @@
 import { Button } from '@radix-ui/themes';
 import { useState, useEffect } from 'react';
 import { isInIframe } from '@yodlpay/yapp-sdk';
+import { setPlaceholderCookies } from '@/lib/actions/cookies';
 
 const AUTH_COOKIES = [
   process.env.NODE_ENV === 'production'
@@ -33,22 +34,22 @@ export const CookieInitializer = () => {
     }
   }, []);
 
-  const setPlaceholderCookies = () => {
+  const handleSetCookies = async () => {
     console.log('🍪 Setting placeholder cookies...');
-    AUTH_COOKIES.forEach((cookie) => {
-      // Set cookie with placeholder value, same security attributes as NextAuth
-      document.cookie = `${cookie}=placeholder; path=/; SameSite=Lax; Secure`;
-      console.log(`  ✅ Set ${cookie}`);
-    });
-    setShowButton(false);
-    console.log('✅ All placeholder cookies set');
+    try {
+      await setPlaceholderCookies();
+      console.log('✅ All placeholder cookies set');
+      setShowButton(false);
+    } catch (error) {
+      console.error('❌ Failed to set cookies:', error);
+    }
   };
 
-  if (!showButton) return null;
+  //   if (!showButton) return null;
 
   return (
-    <div className="fixed bottom-4 right-4">
-      <Button onClick={setPlaceholderCookies}>Initialize Cookies</Button>
-    </div>
+    // <div className="fixed bottom-4 right-4">
+    <Button onClick={handleSetCookies}>Initialize Cookies</Button>
+    // </div>
   );
 };
