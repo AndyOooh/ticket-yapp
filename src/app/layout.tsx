@@ -15,6 +15,7 @@ import { SessionGuard } from '@/providers/SessionGuard';
 import { DebugConsole } from '@/components/DebugConsole';
 import { StorageAccessTest } from '@/components/StorageAccessTest';
 import { CookieInitializer } from '@/components/CookieInitializer';
+import { StorageAccessButton } from '@/components/StorageAccessButton';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -41,6 +42,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <StorageAccessButton />
         <SessionProvider session={session}>
           <TanStackProvider>
             <UserContextProvider>
