@@ -134,17 +134,62 @@ export const authOptions: NextAuthOptions = {
    */
   // Apply production-specific cookie settings
 
-  cookies: {
-    // sessionToken: {
-    //   name: `next-auth.session-token`,
-    //   options: {
-    //     httpOnly: true,
-    //     sameSite: 'none',
-    //     path: '/',
-    //     secure: true,
-    //     domain: process.env.COOKIE_DOMAIN || undefined,
-    //   },
-    // },
+  // cookies: {
+  // sessionToken: {
+  //   name: `next-auth.session-token`,
+  //   options: {
+  //     httpOnly: true,
+  //     sameSite: 'none',
+  //     path: '/',
+  //     secure: true,
+  //     domain: process.env.COOKIE_DOMAIN || undefined,
+  //   },
+  // },
+  // callbackUrl: {
+  //   name: `__Secure-next-auth.callback-url`,
+  //   options: {
+  //     sameSite: 'none',
+  //     path: '/',
+  //     secure: true,
+  //     // domain: process.env.COOKIE_DOMAIN || undefined,
+  //   },
+  // },
+  // csrfToken: {
+  //   name: `__Secure-next-auth.csrf-token`,
+  //   options: {
+  //     httpOnly: true,
+  //     sameSite: 'none',
+  //     path: '/',
+  //     secure: true,
+  //     // domain: process.env.COOKIE_DOMAIN || undefined,
+  //   },
+  // },
+  // },
+  events: {
+    async signIn({ user }) {
+      console.log('🟢 User signed in:', user.address);
+    },
+    async signOut({ token }) {
+      console.log('🟢 User signed out:', token?.address);
+    },
+    async session({ session }) {
+      console.log('🟢 Session updated:', session.address);
+    },
+  },
+};
+
+if (process.env.NODE_ENV === 'production') {
+  // This allows the session to be used in the iframe
+  authOptions.cookies = {
+    sessionToken: {
+      name: `__Secure-next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'none',
+        path: '/',
+        secure: true,
+      },
+    },
     callbackUrl: {
       name: `__Secure-next-auth.callback-url`,
       options: {
@@ -163,30 +208,6 @@ export const authOptions: NextAuthOptions = {
         secure: true,
         // domain: process.env.COOKIE_DOMAIN || undefined,
       },
-    },
-  },
-  events: {
-    async signIn({ user }) {
-      console.log('🟢 User signed in:', user.address);
-    },
-    async signOut({ token }) {
-      console.log('🟢 User signed out:', token?.address);
-    },
-    async session({ session }) {
-      console.log('🟢 Session updated:', session.address);
-    },
-  },
-};
-
-if (process.env.NODE_ENV === 'production' && authOptions.cookies) {
-  // This allows the session to be used in the iframe
-  authOptions.cookies.sessionToken = {
-    name: `__Secure-next-auth.session-token`,
-    options: {
-      httpOnly: true,
-      sameSite: 'none',
-      path: '/',
-      secure: true,
     },
   };
 }
