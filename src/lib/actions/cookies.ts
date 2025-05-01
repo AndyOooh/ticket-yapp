@@ -18,7 +18,11 @@ export async function setPlaceholderCookies() {
   ];
 
   cookieNames.forEach((name) => {
-    cookieStore.set(name, 'placeholder', {
+    const value = name.includes('callback-url')
+      ? process.env.NEXT_PUBLIC_YAPP_URL || 'http://localhost:3001'
+      : 'placeholder';
+
+    cookieStore.set(name, value, {
       path: '/',
       sameSite: 'lax',
       secure: true,
