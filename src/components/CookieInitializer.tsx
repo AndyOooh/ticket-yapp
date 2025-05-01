@@ -4,7 +4,15 @@ import { Button } from '@radix-ui/themes';
 import { useState, useEffect } from 'react';
 import { isInIframe } from '@yodlpay/yapp-sdk';
 
-const AUTH_COOKIES = ['next-auth.session-token', 'next-auth.csrf-token', 'next-auth.callback-url'];
+const AUTH_COOKIES = [
+  process.env.NODE_ENV === 'production'
+    ? '__Secure-next-auth.session-token'
+    : 'next-auth.session-token',
+  process.env.NODE_ENV === 'production' ? '__Secure-next-auth.csrf-token' : 'next-auth.csrf-token',
+  process.env.NODE_ENV === 'production'
+    ? '__Secure-next-auth.callback-url'
+    : 'next-auth.callback-url',
+];
 
 export const CookieInitializer = () => {
   const [showButton, setShowButton] = useState(false);
