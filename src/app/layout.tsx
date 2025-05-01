@@ -14,6 +14,7 @@ import { SessionProvider } from '@/providers/SessionProvider';
 import { SessionGuard } from '@/providers/SessionGuard';
 import { DebugConsole } from '@/components/DebugConsole';
 import { StorageAccessTest } from '@/components/StorageAccessTest';
+import { CookieInitializer } from '@/components/CookieInitializer';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -61,6 +62,7 @@ export default async function RootLayout({
         </SessionProvider>
         <DebugConsole />
         <StorageAccessTest />
+        <CookieInitializer />
       </body>
     </html>
   );
