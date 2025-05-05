@@ -77,6 +77,37 @@ export const SiweSignInButton = () => {
     }
   }
 
+  function setClientPlaceholderCookies() {
+    const isProd = process.env.NODE_ENV === 'production';
+    const cookieNames = [
+      isProd ? '__Secure-next-auth.session-token' : 'next-auth.session-token',
+      isProd ? '__Secure-next-auth.csrf-token' : 'next-auth.csrf-token',
+      isProd ? '__Secure-next-auth.callback-url' : 'next-auth.callback-url',
+    ];
+
+    let allSet = true;
+
+    cookieNames.forEach((name) => {
+      const value = name.includes('callback-url')
+        ? process.env.NEXT_PUBLIC_YAPP_URL || 'http://localhost:3001'
+        : 'placeholder';
+
+      // Set cookie for cross-site/iframe support
+      document.cookie = `${name}=${encodeURIComponent(value)}; path=/; SameSite=None; Secure`;
+
+      // Check if cookie was set
+      const exists = document.cookie.split('; ').some((c) => c.startsWith(name + '='));
+      console.log(`${exists ? '✅' : '❌'} Set cookie:`, name, value);
+      if (!exists) allSet = false;
+    });
+
+    if (allSet) {
+      console.log('✅ All client-side placeholder cookies set');
+    } else {
+      console.warn('❌ Some client-side cookies may not have been set');
+    }
+  }
+
   async function requestSIWE(): Promise<void> {
     console.log('🚀🟣 requestSIWE');
     if (!userContext?.address) {
@@ -98,7 +129,8 @@ export const SiweSignInButton = () => {
       }
 
       // Set placeholder cookies
-      await setPlaceholderCookies();
+      // await setPlaceholderCookies();
+      setClientPlaceholderCookies();
 
       // 1. Generate a nonce from the server
       console.log('🔹 Generating nonce from server...');
