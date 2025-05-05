@@ -11,8 +11,17 @@ export const StorageAccessButton = () => {
     setError(null);
     if ('requestStorageAccess' in document) {
       try {
-        await (document as any).requestStorageAccess();
-        setGranted(true);
+        await document.requestStorageAccess();
+
+        const hasAccess = await document.hasStorageAccess();
+        console.log('🚀 hasAccess:', hasAccess);
+
+        // Check if storage access is granted
+        if (hasAccess) {
+          setGranted(true);
+        } else {
+          setGranted(false);
+        }
       } catch (err) {
         setGranted(false);
         setError((err as Error).message);
