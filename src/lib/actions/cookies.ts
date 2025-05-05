@@ -22,16 +22,13 @@ export async function setPlaceholderCookies() {
       ? process.env.NEXT_PUBLIC_YAPP_URL || 'http://localhost:3001'
       : 'placeholder';
 
-    const sameSite = Math.random() > 0.5 ? 'lax' : 'none';
+    cookieStore.set(name, value, {
+      path: '/',
+      sameSite: 'none',
+      secure: true,
+    });
 
-    try {
-      cookieStore.set(name, value, {
-        path: '/',
-        sameSite,
-        secure: true,
-      });
-    } catch (error) {
-      console.error('❌ Failed to set cookie:', name, sameSite, value, error);
-    }
+    const allCookies = cookieStore.getAll();
+    console.log('🔹 All cookies:', allCookies);
   });
 }

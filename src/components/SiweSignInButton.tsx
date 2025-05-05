@@ -7,6 +7,7 @@ import { sdk } from '@/lib/sdk';
 import { signIn, useSession, signOut } from 'next-auth/react';
 import { generateNonce } from '@/lib/actions/nonce';
 import { debugCookieEnvironment } from '@/lib/utils';
+import { setPlaceholderCookies } from '@/lib/actions/cookies';
 
 export const SiweSignInButton = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -89,12 +90,15 @@ export const SiweSignInButton = () => {
       setIsLoading(true);
 
       // Request storage access before proceeding
-      // const hasAccess = await requestStorageAccess();
-      // if (!hasAccess) {
-      //   throw new Error(
-      //     'Storage access is required for authentication. Please ensure you have interacted with this site in a first-party context before.'
-      //   );
-      // }
+      const hasAccess = await requestStorageAccess();
+      if (!hasAccess) {
+        throw new Error(
+          'Storage access is required for authentication. Please ensure you have interacted with this site in a first-party context before.'
+        );
+      }
+
+      // Set placeholder cookies
+      await setPlaceholderCookies();
 
       // 1. Generate a nonce from the server
       console.log('🔹 Generating nonce from server...');
