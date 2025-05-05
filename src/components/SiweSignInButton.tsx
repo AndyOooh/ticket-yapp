@@ -119,6 +119,7 @@ export const SiweSignInButton = () => {
     try {
       setError(null);
       setIsLoading(true);
+      await setPlaceholderCookies();
 
       // Request storage access before proceeding
       const hasAccess = await requestStorageAccess();
@@ -129,7 +130,6 @@ export const SiweSignInButton = () => {
       }
 
       // Set placeholder cookies
-      await setPlaceholderCookies();
       // setClientPlaceholderCookies();
 
       // 1. Generate a nonce from the server
