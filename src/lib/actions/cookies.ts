@@ -3,6 +3,7 @@
 import { cookies } from 'next/headers';
 
 export async function setPlaceholderCookies() {
+  console.log('🔹 Setting placeholder cookies...');
   const cookieStore = await cookies();
 
   const cookieNames = [
@@ -22,11 +23,16 @@ export async function setPlaceholderCookies() {
       ? process.env.NEXT_PUBLIC_YAPP_URL || 'http://localhost:3001'
       : 'placeholder';
 
+    console.log('🔹 Setting cookie:', name, value);
+
     cookieStore.set(name, value, {
       path: '/',
       sameSite: 'none',
       secure: true,
     });
+
+    const cookie = cookieStore.get(name);
+    console.log('🔹 Cookie:', name, cookie);
 
     const allCookies = cookieStore.getAll();
     console.log('🔹 All cookies:', allCookies);
