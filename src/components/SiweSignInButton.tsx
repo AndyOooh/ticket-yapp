@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@radix-ui/themes';
+import { AlertDialog, Button, Flex } from '@radix-ui/themes';
 import { useState, useEffect } from 'react';
 import { useUserContext } from '@/providers/UserContextProvider';
 import { sdk } from '@/lib/sdk';
@@ -8,15 +8,16 @@ import { signIn, useSession, signOut } from 'next-auth/react';
 import { generateNonce } from '@/lib/actions/nonce';
 import { debugCookieEnvironment } from '@/lib/utils';
 import { setPlaceholderCookies } from '@/lib/actions/cookies';
+import { RequestStorageAccessModal } from './RequestStorageAccessModal';
 
 export const SiweSignInButton = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [isStorageAccessModalOpen, setIsStorageAccessModalOpen] = useState<boolean>(true);
+  console.log('🚀 isStorageAccessModalOpen:', isStorageAccessModalOpen);
   const { data: userContext } = useUserContext();
   const { data: session, status } = useSession();
 
-  const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-  const hasStorageAccessAPI = 'hasStorageAccess' in document && 'requestStorageAccess' in document;
   // Check cookie environment on mount to help with debugging
   useEffect(() => {
     if (userContext?.address && !session?.address) {
@@ -35,6 +36,10 @@ export const SiweSignInButton = () => {
   }, [userContext, session]);
 
   async function requestStorageAccess(): Promise<boolean> {
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    const hasStorageAccessAPI =
+      'hasStorageAccess' in document && 'requestStorageAccess' in document;
+
     if (!isSafari || !hasStorageAccessAPI) {
       console.log('🟡 Storage access not needed - not Safari or API not available');
       return true;
@@ -77,37 +82,6 @@ export const SiweSignInButton = () => {
     }
   }
 
-  // function setClientPlaceholderCookies() {
-  //   const isProd = process.env.NODE_ENV === 'production';
-  //   const cookieNames = [
-  //     isProd ? '__Secure-next-auth.session-token' : 'next-auth.session-token',
-  //     isProd ? '__Secure-next-auth.csrf-token' : 'next-auth.csrf-token',
-  //     isProd ? '__Secure-next-auth.callback-url' : 'next-auth.callback-url',
-  //   ];
-
-  //   let allSet = true;
-
-  //   cookieNames.forEach((name) => {
-  //     const value = name.includes('callback-url')
-  //       ? process.env.NEXT_PUBLIC_YAPP_URL || 'http://localhost:3001'
-  //       : 'placeholder';
-
-  //     // Set cookie for cross-site/iframe support
-  //     document.cookie = `${name}=${encodeURIComponent(value)}; path=/; SameSite=None; Secure`;
-
-  //     // Check if cookie was set
-  //     const exists = document.cookie.split('; ').some((c) => c.startsWith(name + '='));
-  //     console.log(`${exists ? '✅' : '❌'} Set cookie:`, name, value);
-  //     if (!exists) allSet = false;
-  //   });
-
-  //   if (allSet) {
-  //     console.log('✅ All client-side placeholder cookies set');
-  //   } else {
-  //     console.warn('❌ Some client-side cookies may not have been set');
-  //   }
-  // }
-
   async function requestSIWE(): Promise<void> {
     console.log('🚀🟣 requestSIWE');
     if (!userContext?.address) {
@@ -119,15 +93,18 @@ export const SiweSignInButton = () => {
     try {
       setError(null);
       setIsLoading(true);
+
       await setPlaceholderCookies();
 
+      // setIsStorageAccessModalOpen(true);
+
       // Request storage access before proceeding
-      const hasAccess = await requestStorageAccess();
-      if (!hasAccess) {
-        throw new Error(
-          'Storage access is required for authentication. Please ensure you have interacted with this site in a first-party context before.'
-        );
-      }
+      // const hasAccess = await requestStorageAccess();
+      // if (!hasAccess) {
+      //   throw new Error(
+      //     'Storage access is required for authentication. Please ensure you have interacted with this site in a first-party context before.'
+      //   );
+      // }
 
       // Set placeholder cookies
       // setClientPlaceholderCookies();
@@ -198,9 +175,39 @@ export const SiweSignInButton = () => {
         <Button onClick={handleSignOut}>Verified: {session.address.slice(0, 6)}...</Button>
       ) : (
         <>
+          {/* <AlertDialog.Root>
+            <AlertDialog.Trigger>
+              <Button onClick={() => requestSIWE()} disabled={isLoading}>
+                {isLoading ? 'Signing in...' : 'Sign in'}
+              </Button>
+            </AlertDialog.Trigger>
+
+            <AlertDialog.Content maxWidth="450px">
+              <AlertDialog.Title>Grant cookie access</AlertDialog.Title>
+              <AlertDialog.Description size="2">
+                On iOS, Safari requires you to grant access to cookies. Please grant access to
+                cookies to continue.
+              </AlertDialog.Description>
+
+              <Flex gap="3" mt="4" justify="end">
+                <AlertDialog.Cancel>
+                  <Button variant="soft" color="gray">
+                    Cancel
+                  </Button>
+                </AlertDialog.Cancel>
+                <AlertDialog.Action>
+                  <Button onClick={() => requestStorageAccess()} variant="solid" color="red">
+                    Grant access
+                  </Button>
+                </AlertDialog.Action>
+              </Flex>
+            </AlertDialog.Content>
+          </AlertDialog.Root> */}
+
           <Button onClick={() => requestSIWE()} disabled={isLoading}>
             {isLoading ? 'Signing in...' : 'Sign in'}
           </Button>
+          {/* TODO: move this for better ui. COnsider using a Toast instead */}
           {error && <div style={{ color: 'red', marginTop: '8px' }}>{error}</div>}
         </>
       )}
