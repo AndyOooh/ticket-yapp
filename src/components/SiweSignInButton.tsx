@@ -13,8 +13,7 @@ import { RequestStorageAccessModal } from './RequestStorageAccessModal';
 export const SiweSignInButton = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [isStorageAccessModalOpen, setIsStorageAccessModalOpen] = useState<boolean>(true);
-  console.log('🚀 isStorageAccessModalOpen:', isStorageAccessModalOpen);
+  // const [isStorageAccessModalOpen, setIsStorageAccessModalOpen] = useState<boolean>(true);
   const { data: userContext } = useUserContext();
   const { data: session, status } = useSession();
 
@@ -90,15 +89,17 @@ export const SiweSignInButton = () => {
       return;
     }
 
+    setError(null);
+    setIsLoading(true);
+    
+    const storageAccessResult = await requestStorageAccess();
+    console.log('🚀🟣 requestStorageAccess result:', storageAccessResult);
+    
+    console.log('🔹 About to call setPlaceholderCookies...');
+    await setPlaceholderCookies();
+    console.log('🔹 Finished setPlaceholderCookies');
+    
     try {
-      setError(null);
-      setIsLoading(true);
-
-      const storageAccessResult = await requestStorageAccess();
-      console.log('🚀🟣 requestStorageAccess result:', storageAccessResult);
-
-      await setPlaceholderCookies();
-
       // setIsStorageAccessModalOpen(true);
 
       // Request storage access before proceeding
