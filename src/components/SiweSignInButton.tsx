@@ -92,12 +92,13 @@ export const SiweSignInButton = () => {
     setError(null);
     setIsLoading(true);
 
-    console.log('🔹 About to call setPlaceholderCookies...');
+    // Call setPlaceholderCookies in isolation
+    console.log('🍪 Setting placeholder cookies...');
     try {
       await setPlaceholderCookies();
-      console.log('🔹 Finished setPlaceholderCookies');
+      console.log('✅ All placeholder cookies set');
     } catch (error) {
-      console.error('🔴 Error setting placeholder cookies:', error);
+      console.error('❌ Failed to set cookies:', error);
       throw error;
     }
 
