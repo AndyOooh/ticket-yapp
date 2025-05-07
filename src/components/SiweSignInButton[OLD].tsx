@@ -94,9 +94,6 @@ export const SiweSignInButton = () => {
       setError(null);
       setIsLoading(true);
 
-      const storageAccessResult = await requestStorageAccess();
-      console.log('🚀🟣 requestStorageAccess result:', storageAccessResult);
-
       await setPlaceholderCookies();
 
       // setIsStorageAccessModalOpen(true);
