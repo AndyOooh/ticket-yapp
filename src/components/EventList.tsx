@@ -70,11 +70,7 @@ export const EventList = ({ initialEvents }: EventListProps) => {
 
       {hasMore && (
         <Box ref={ref} py="4">
-          {loading ? (
-            <Text size="2">Loading more events...</Text>
-          ) : (
-            <Text size="2">Scroll for more</Text>
-          )}
+          {loading && <Text size="2">Loading more events...</Text>}
         </Box>
       )}
     </Flex>

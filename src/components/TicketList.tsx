@@ -92,13 +92,9 @@ export const MyTicketList = () => {
 
       {hasMore && (
         <Box ref={ref} py="4">
-          {isFetching ? (
+          {isFetching && (
             <Text size="2" align="center">
               Loading more tickets...
-            </Text>
-          ) : (
-            <Text size="2" align="center">
-              Scroll for more
             </Text>
           )}
         </Box>
