@@ -91,14 +91,19 @@ export const SiweSignInButton = () => {
 
     setError(null);
     setIsLoading(true);
-    
+
+    console.log('🔹 About to call setPlaceholderCookies...');
+    try {
+      await setPlaceholderCookies();
+      console.log('🔹 Finished setPlaceholderCookies');
+    } catch (error) {
+      console.error('🔴 Error setting placeholder cookies:', error);
+      throw error;
+    }
+
     const storageAccessResult = await requestStorageAccess();
     console.log('🚀🟣 requestStorageAccess result:', storageAccessResult);
-    
-    console.log('🔹 About to call setPlaceholderCookies...');
-    await setPlaceholderCookies();
-    console.log('🔹 Finished setPlaceholderCookies');
-    
+
     try {
       // setIsStorageAccessModalOpen(true);
 
