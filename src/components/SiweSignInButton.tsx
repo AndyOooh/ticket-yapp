@@ -92,10 +92,15 @@ export const SiweSignInButton = () => {
     setError(null);
     setIsLoading(true);
 
+    // First get storage access
     const storageAccessResult = await requestStorageAccess();
     console.log('🚀🟣 requestStorageAccess result:', storageAccessResult);
 
-    // Call setPlaceholderCookies in isolation
+    if (!storageAccessResult) {
+      throw new Error('Storage access is required for authentication');
+    }
+
+    // Then set placeholder cookies
     console.log('🍪 Setting placeholder cookies...');
     try {
       await setPlaceholderCookies();
@@ -105,20 +110,10 @@ export const SiweSignInButton = () => {
       throw error;
     }
 
+    const storageAccessResult2 = await requestStorageAccess();
+    console.log('🚀🟣 requestStorageAccess result:', storageAccessResult2);
+
     try {
-      // setIsStorageAccessModalOpen(true);
-
-      // Request storage access before proceeding
-      // const hasAccess = await requestStorageAccess();
-      // if (!hasAccess) {
-      //   throw new Error(
-      //     'Storage access is required for authentication. Please ensure you have interacted with this site in a first-party context before.'
-      //   );
-      // }
-
-      // Set placeholder cookies
-      // setClientPlaceholderCookies();
-
       // 1. Generate a nonce from the server
       console.log('🔹 Generating nonce from server...');
       const nonce = await generateNonce();
