@@ -120,7 +120,6 @@ export const SiweSignInButton = () => {
         console.log('🚀 signinRes:', signinRes);
       } catch (error) {
         console.error('❌ Failed to sign in:', error);
-        throw error;
       }
 
       // 2. Request signature from parent app with the nonce
