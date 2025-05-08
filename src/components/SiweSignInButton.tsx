@@ -102,13 +102,13 @@ export const SiweSignInButton = () => {
 
     // Then set placeholder cookies
     console.log('🍪 Setting placeholder cookies...');
-    try {
-      await setPlaceholderCookies();
-      console.log('✅ All placeholder cookies set');
-    } catch (error) {
-      console.error('❌ Failed to set cookies:', error);
-      throw error;
-    }
+    // try {
+    //   await setPlaceholderCookies();
+    //   console.log('✅ All placeholder cookies set');
+    // } catch (error) {
+    //   console.error('❌ Failed to set cookies:', error);
+    //   throw error;
+    // }
 
     try {
       // 1. Generate a nonce from the server
