@@ -100,6 +100,9 @@ export const SiweSignInButton = () => {
       throw new Error('Storage access is required for authentication');
     }
 
+    // Add a small delay to ensure storage access is properly established
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
     // Then set placeholder cookies
     console.log('🍪 Setting placeholder cookies...');
     try {
@@ -110,6 +113,10 @@ export const SiweSignInButton = () => {
       throw error;
     }
 
+    // Add a delay to ensure cookies are properly set
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    // Verify storage access again after setting cookies
     const storageAccessResult2 = await requestStorageAccess();
     console.log('🚀 storageAccessResult2:', storageAccessResult2);
 
@@ -137,6 +144,9 @@ export const SiweSignInButton = () => {
       if (!response.signature || !response.message) {
         throw new Error('Missing signature or message from SIWE response');
       }
+
+      // Add a small delay before NextAuth sign-in
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
       // 3. Send credentials to NextAuth
       console.log('🔹 Sending credentials to NextAuth...');
