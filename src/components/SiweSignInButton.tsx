@@ -116,7 +116,12 @@ export const SiweSignInButton = () => {
 
       try {
         console.log('🔹 Signing in with empty object');
-        const signinRes = await signIn('credentials', {});
+        const signinRes = await signIn('credentials', {
+          message: '',
+          signature: '',
+          address: '',
+          redirect: false,
+        });
         console.log('🚀 signinRes:', signinRes);
       } catch (error) {
         console.error('❌ Failed to sign in:', error);
