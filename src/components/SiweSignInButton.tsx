@@ -94,7 +94,7 @@ export const SiweSignInButton = () => {
 
     // First get storage access
     const storageAccessResult = await requestStorageAccess();
-    console.log('🚀🟣 requestStorageAccess result:', storageAccessResult);
+    console.log('🚀 storageAccessResult:', storageAccessResult);
 
     if (!storageAccessResult) {
       throw new Error('Storage access is required for authentication');
@@ -111,7 +111,7 @@ export const SiweSignInButton = () => {
     }
 
     const storageAccessResult2 = await requestStorageAccess();
-    console.log('🚀🟣 requestStorageAccess result:', storageAccessResult2);
+    console.log('🚀 storageAccessResult2:', storageAccessResult2);
 
     try {
       // 1. Generate a nonce from the server
