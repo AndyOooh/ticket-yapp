@@ -10,13 +10,13 @@ export async function setPlaceholderCookies() {
     // process.env.NODE_ENV === 'production'
     //   ? '__Secure-next-auth.session-token'
     //   : 'next-auth.session-token',
-    // process.env.NODE_ENV === 'production'
-    //   ? '__Secure-next-auth.csrf-token'
-    //   : 'next-auth.csrf-token',
-    // process.env.NODE_ENV === 'production'
-    //   ? '__Secure-next-auth.callback-url'
-    //   : 'next-auth.callback-url',
-    'some-cookie',
+    process.env.NODE_ENV === 'production'
+      ? '__Secure-next-auth.csrf-token'
+      : 'next-auth.csrf-token',
+    process.env.NODE_ENV === 'production'
+      ? '__Secure-next-auth.callback-url'
+      : 'next-auth.callback-url',
+    // 'some-cookie',
   ];
 
   cookieNames.forEach((name) => {

@@ -102,30 +102,17 @@ export const SiweSignInButton = () => {
 
     // Then set placeholder cookies
     console.log('🍪 Setting placeholder cookies...');
-    // try {
-    //   await setPlaceholderCookies();
-    //   console.log('✅ All placeholder cookies set');
-    // } catch (error) {
-    //   console.error('❌ Failed to set cookies:', error);
-    //   throw error;
-    // }
+    try {
+      await setPlaceholderCookies();
+      console.log('✅ All placeholder cookies set');
+    } catch (error) {
+      console.error('❌ Failed to set cookies:', error);
+      throw error;
+    }
 
     try {
       // 1. Generate a nonce from the server
       const nonce = await generateNonce();
-
-      // try {
-      //   console.log('🔹 Signing in with empty object');
-      //   const signinRes = await signIn('credentials', {
-      //     message: '',
-      //     signature: '',
-      //     address: '',
-      //     redirect: false,
-      //   });
-      //   console.log('🚀 signinRes:', signinRes);
-      // } catch (error) {
-      //   console.error('❌ Failed to sign in:', error);
-      // }
 
       // 2. Request signature from parent app with the nonce
       console.log('🔹 Requesting SIWE signature from parent app...');
@@ -149,13 +136,6 @@ export const SiweSignInButton = () => {
       // 3. Send credentials to NextAuth
       console.log('🔹 Sending credentials to NextAuth...');
       const result = await signIn('credentials', {
-        message: response.message,
-        signature: response.signature,
-        address: response.address,
-        redirect: false,
-      });
-
-      const result2 = await signIn('credentials', {
         message: response.message,
         signature: response.signature,
         address: response.address,
