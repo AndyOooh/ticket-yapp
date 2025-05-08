@@ -53,15 +53,15 @@ export const SiweSignInButton = () => {
         hostname: window.location.hostname,
       });
 
-      // Check if we already have access
-      console.log('🔹 Checking current storage access...');
-      const hasAccess = await document.hasStorageAccess();
-      console.log('🔹 Current storage access:', hasAccess);
+      // // Check if we already have access
+      // console.log('🔹 Checking current storage access...');
+      // const hasAccess = await document.hasStorageAccess();
+      // console.log('🔹 Current storage access:', hasAccess);
 
-      if (hasAccess) {
-        console.log('🟢 Already have storage access');
-        return true;
-      }
+      // if (hasAccess) {
+      //   console.log('🟢 Already have storage access');
+      //   return true;
+      // }
 
       // Request access
       console.log('🔹 Requesting storage access...');
@@ -100,9 +100,6 @@ export const SiweSignInButton = () => {
       throw new Error('Storage access is required for authentication');
     }
 
-    // Add a small delay to ensure storage access is properly established
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
     // Then set placeholder cookies
     console.log('🍪 Setting placeholder cookies...');
     try {
@@ -113,18 +110,9 @@ export const SiweSignInButton = () => {
       throw error;
     }
 
-    // Add a delay to ensure cookies are properly set
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Verify storage access again after setting cookies
-    const storageAccessResult2 = await requestStorageAccess();
-    console.log('🚀 storageAccessResult2:', storageAccessResult2);
-
     try {
       // 1. Generate a nonce from the server
-      console.log('🔹 Generating nonce from server...');
       const nonce = await generateNonce();
-      console.log('🔹 Received nonce:', nonce);
 
       // 2. Request signature from parent app with the nonce
       console.log('🔹 Requesting SIWE signature from parent app...');
@@ -144,9 +132,6 @@ export const SiweSignInButton = () => {
       if (!response.signature || !response.message) {
         throw new Error('Missing signature or message from SIWE response');
       }
-
-      // Add a small delay before NextAuth sign-in
-      await new Promise((resolve) => setTimeout(resolve, 500));
 
       // 3. Send credentials to NextAuth
       console.log('🔹 Sending credentials to NextAuth...');

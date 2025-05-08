@@ -1,7 +1,6 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import crypto from 'crypto';
 
 export async function setPlaceholderCookies() {
   console.log('🔹 Setting placeholder cookies...');
@@ -22,17 +21,12 @@ export async function setPlaceholderCookies() {
   cookieNames.forEach((name) => {
     const value = name.includes('callback-url')
       ? process.env.NEXT_PUBLIC_YAPP_URL || 'http://localhost:3001'
-      : name.includes('csrf-token')
-      ? `${crypto.randomBytes(32).toString('hex')}%7C${crypto.randomBytes(32).toString('hex')}` // Generate two 32-byte hex strings joined with %7C
       : 'placeholder';
-
-    console.log('🔹 Setting cookie:', name, value);
 
     cookieStore.set(name, value, {
       path: '/',
       sameSite: 'none',
       secure: true,
-      ...(name.includes('csrf-token') ? { httpOnly: true } : {}),
     });
 
     const cookie = cookieStore.get(name);
