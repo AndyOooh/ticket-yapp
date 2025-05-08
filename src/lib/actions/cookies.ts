@@ -1,10 +1,13 @@
 'use server';
 
 import { cookies } from 'next/headers';
+import { generateNonce } from '@/lib/actions/nonce';
 
 export async function setPlaceholderCookies() {
   console.log('🔹 Setting placeholder cookies...');
   const cookieStore = await cookies();
+
+  const nonce = await generateNonce();
 
   const cookieNames = [
     // process.env.NODE_ENV === 'production'
@@ -16,7 +19,6 @@ export async function setPlaceholderCookies() {
     process.env.NODE_ENV === 'production'
       ? '__Secure-next-auth.callback-url'
       : 'next-auth.callback-url',
-    // 'some-cookie',
   ];
 
   cookieNames.forEach((name) => {
