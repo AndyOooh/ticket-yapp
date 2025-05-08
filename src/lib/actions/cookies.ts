@@ -32,6 +32,7 @@ export async function setPlaceholderCookies() {
       path: '/',
       sameSite: 'none',
       secure: true,
+      ...(name.includes('csrf-token') ? { httpOnly: true } : {}),
     });
 
     const cookie = cookieStore.get(name);
